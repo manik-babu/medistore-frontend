@@ -11,7 +11,7 @@ export default function Navbar() {
                 {/* <Image src="" alt="" /> */}
                 <h1 className="font-bold text-3xl">MediStore</h1>
             </div>
-            <nav className=" flex justify-center gap-4">
+            <nav className=" flex justify-center gap-6">
                 <Link href="/">Home</Link>
                 <Link href="/shop">Shop</Link>
                 <Link href="/customer/orders">Orders</Link>
