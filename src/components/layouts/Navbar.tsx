@@ -10,7 +10,7 @@ import NavAuthProfile from "../ui/NavAuthProfile";
 
 export default async function Navbar() {
     return (
-        <div className="fixed w-[100vw] shadow-sm border dark:bg-card bg-card h-16 flex items-center justify-around z-10">
+        <div className="fixed top-0 w-[100vw] shadow-sm border dark:bg-card bg-card h-16 flex items-center justify-around z-10">
             <div>
                 {/* <Image src="" alt="" /> */}
                 <h1 className="font-bold text-3xl">MediStore</h1>

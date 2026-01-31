@@ -22,6 +22,7 @@ import { authClient, signInWithGoogle } from "@/lib/auth-client"
 import { useForm } from "@tanstack/react-form"
 import z from "zod";
 import { useState } from "react"
+import { redirect } from "next/navigation"
 
 const formSchema = z.object({
   email: z.email(),
@@ -54,7 +55,7 @@ export function LoginForm({
           setformError(error?.message || null)
         }
         else {
-          console.log(data)
+          redirect("/home")
         }
       } catch (error) {
         console.log(error)

@@ -1,0 +1,8 @@
+#landing-image {
+    transform: scale(1.5);
+}
+
+.select-trigger,
+.sort-trigger {
+    height: 44px !important;
+}
