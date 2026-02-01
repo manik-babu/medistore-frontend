@@ -6,3 +6,14 @@
 .sort-trigger {
     height: 44px !important;
 }
+
+#medicine-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(272px, 1fr));
+    gap: 8px;
+}
+
+.taka-symbol {
+    display: block;
+    transform: scale(1.5);
+}

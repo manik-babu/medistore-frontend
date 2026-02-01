@@ -1,14 +1,9 @@
-"use client"
-
-import { MedicineSearchBar } from "@/components/shop/MedicineSearchBar";
-
+import MainShop from "@/components/shop/MainShop";
+export const dynamic = "force-dynamic";
 export default function Shop() {
-    const handleSearch = (value: any) => {
-        console.log(value);
-    }
     return (
         <div>
-            <MedicineSearchBar onSearch={handleSearch} />
+            <MainShop />
         </div>
     );
 }

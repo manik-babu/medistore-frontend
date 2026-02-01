@@ -21,6 +21,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { KeyboardEvent, useCallback, useEffect, useState } from "react"
+import { getCategories } from "@/actions/shop.actions"
 
 interface MedicineSearchBarProps {
   onSearch?: (params: SearchParams) => void
@@ -28,47 +29,39 @@ interface MedicineSearchBarProps {
 }
 
 export interface SearchParams {
-  query: string
-  category: string
+  searchText: string
+  categoryId: string
   sortBy: string
 }
 
-const categories = [
-  { value: "all", label: "All Categories" },
-  { value: "pain-relief", label: "Pain Relief" },
-  { value: "cold-flu", label: "Cold & Flu" },
-  { value: "antibiotics", label: "Antibiotics" },
-  { value: "vitamins", label: "Vitamins & Supplements" },
-  { value: "diabetes", label: "Diabetes Care" },
-  { value: "heart-health", label: "Heart Health" },
-  { value: "digestive", label: "Digestive Health" },
-  { value: "skin-care", label: "Skin Care" },
-  { value: "first-aid", label: "First Aid" },
-  { value: "prescription", label: "Prescription Medicine" },
-]
-
 const sortOptions = [
   { value: "relevance", label: "Most Relevant" },
+  { value: "popular", label: "Most Popular" },
   { value: "price-low", label: "Price: Low to High" },
   { value: "price-high", label: "Price: High to Low" },
   { value: "newest", label: "Newest First" },
-  { value: "rating", label: "Highest Rated" },
-  { value: "popular", label: "Most Popular" },
 ]
 
+type Categories = {
+  id: string;
+  name: string;
+}
+
 export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProps) {
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [categories, setCategories] = useState<Categories[]>([{ id: "all", name: "All Categories" }]);
+
+  const [searchText, setsearchText] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [selectedSort, setSelectedSort] = useState<string>("relevance")
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
   const handleSearch = useCallback(() => {
     onSearch?.({
-      query: searchQuery,
-      category: selectedCategory,
+      searchText: searchText,
+      categoryId: selectedCategory,
       sortBy: selectedSort,
     })
-  }, [searchQuery, selectedCategory, selectedSort, onSearch])
+  }, [searchText, selectedCategory, selectedSort, onSearch])
 
   // Trigger search when Enter is pressed
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -79,21 +72,31 @@ export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProp
 
   // Auto-search when filters change
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleSearch()
-    }, 500) // Debounce search
-
-    return () => clearTimeout(timeoutId)
-  }, [searchQuery, selectedCategory, selectedSort, handleSearch])
+    handleSearch();
+  }, [selectedCategory, selectedSort]);
 
   const clearSearch = () => {
-    setSearchQuery("")
+    setsearchText("")
     setSelectedCategory("all")
     setSelectedSort("relevance")
   }
+  const getCategoryList = async () => {
+    const { data, error } = await getCategories();
+    if (data) {
+      setCategories([...categories, ...data.data]);
+    }
+    else {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getCategoryList();
+    handleSearch();
+  }, [])
 
   return (
-    <div className={`w-full space-y-4 ${className} mt-20 px-[5vw]`}>
+    <div className={`w-full space-y-4 ${className} mt-4 px-[5vw]`}>
       {/* Main Search Bar */}
       <div className="flex items-center flex-row gap-2 w-full h-12">
         {/* Search Input */}
@@ -102,14 +105,14 @@ export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProp
           <Input
             type="text"
             placeholder="Search for medicines, health products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchText}
+            onChange={(e) => setsearchText(e.target.value)}
             onKeyDown={handleKeyDown}
             className="pl-10 pr-10 h-11"
           />
-          {searchQuery && (
+          {searchText && (
             <button
-              onClick={() => setSearchQuery("")}
+              onClick={() => setsearchText("")}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <X className="h-4 w-4" />
@@ -125,8 +128,8 @@ export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProp
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
-                <SelectItem key={category.value} value={category.value}>
-                  {category.label}
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -174,8 +177,8 @@ export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProp
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -224,15 +227,15 @@ export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProp
       </div>
 
       {/* Active Filters Display */}
-      {(selectedCategory !== "all" || selectedSort !== "relevance" || searchQuery) && (
+      {(selectedCategory !== "all" || selectedSort !== "relevance" || searchText) && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">Active filters:</span>
 
-          {searchQuery && (
+          {searchText && (
             <Badge variant="secondary" className="gap-1">
-              Query: {searchQuery}
+              Query: {searchText}
               <button
-                onClick={() => setSearchQuery("")}
+                onClick={() => setsearchText("")}
                 className="ml-1 hover:text-destructive"
               >
                 <X className="h-3 w-3" />
@@ -242,7 +245,7 @@ export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProp
 
           {selectedCategory !== "all" && (
             <Badge variant="secondary" className="gap-1">
-              {categories.find(c => c.value === selectedCategory)?.label}
+              {categories.find(c => c.id === selectedCategory)?.name}
               <button
                 onClick={() => setSelectedCategory("all")}
                 className="ml-1 hover:text-destructive"
