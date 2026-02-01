@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 
 export default function RoleActionImage({ user, className }: { user: any; className?: string }) {
-    console.log(user)
     if (user.role === UserRole.ADMIN) {
         return (
             <Link href="/profile">

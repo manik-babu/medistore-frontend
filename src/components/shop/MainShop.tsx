@@ -8,7 +8,6 @@ import MedicineCardContainer from "../ui/MedicineCardContainer";
 export default function MainShop() {
     const [medicines, setmedicines] = useState<any>()
     const handleSearch = async (value: any) => {
-        console.log(value)
         const { data, error } = await getMedicines(value);
         if (error) {
             throw new Error("Something went wrong");

@@ -3,7 +3,8 @@ import { createAuthClient } from "better-auth/react"
 import { redirect } from "next/navigation";
 export const authClient = createAuthClient({
     /** The base URL of the server (optional if you're using the same domain) */
-    baseURL: env.NEXT_PUBLIC_BACKEND_URL
+    // baseURL: env.NEXT_PUBLIC_BACKEND_URL
+    baseURL: "http://localhost:8080"
 })
 
 export const signInWithGoogle = async () => {

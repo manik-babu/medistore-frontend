@@ -1,3 +1,4 @@
+import Sidebar from "@/components/layouts/Sidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export default function RootLayout({
 }>) {
     return (
         <div>
-            <h1>Admin</h1>
+            <Sidebar />
             {children}
         </div>
     );

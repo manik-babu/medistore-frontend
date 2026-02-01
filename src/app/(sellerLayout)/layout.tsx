@@ -1,3 +1,6 @@
+import { AppSidebar } from "@/components/app-sidebar";
+import Sidebar from "@/components/layouts/Sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,8 +15,17 @@ export default function RootLayout({
 }>) {
     return (
         <div>
-            <h1>Seller</h1>
-            {children}
+            <SidebarProvider>
+                <AppSidebar />
+                <SidebarInset>
+                    <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+                        <div className="flex items-center gap-2 px-3">
+                            <SidebarTrigger />
+                        </div>
+                    </header>
+                    {children}
+                </SidebarInset>
+            </SidebarProvider>
         </div>
     );
 }

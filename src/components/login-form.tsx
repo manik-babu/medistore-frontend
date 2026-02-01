@@ -22,7 +22,7 @@ import { authClient, signInWithGoogle } from "@/lib/auth-client"
 import { useForm } from "@tanstack/react-form"
 import z from "zod";
 import { useState } from "react"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   email: z.email(),
@@ -35,6 +35,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [formError, setformError] = useState<string | null>(null)
+  const router = useRouter()
   const form = useForm({
     defaultValues: {
       email: "",
@@ -44,18 +45,17 @@ export function LoginForm({
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
       try {
         const { data, error } = await authClient.signIn.email({
           email: value.email,
           password: value.password
         });
         if (error) {
-          console.log(error)
           setformError(error?.message || null)
         }
         else {
-          redirect("/")
+          console.log("Login success")
+          router.push("/")
         }
       } catch (error) {
         console.log(error);
