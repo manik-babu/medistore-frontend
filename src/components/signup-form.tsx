@@ -1,5 +1,6 @@
 "use client"
 
+import { ToastContainer, toast } from 'react-toastify';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -23,6 +24,7 @@ import { useState } from "react"
 import z from "zod";
 import { RadioGroupDescription } from "./ui/radioGroup"
 import { UserRole } from "@/constants/userRole"
+import { redirect } from 'next/navigation';
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -57,7 +59,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             setformError(error.message);
         }
         else {
-          console.log("Signup success:", data);
+          toast.success("Signup successfull");
+          setTimeout(() => {
+            redirect("/login");
+          }, 1500);
         }
       } catch (error) {
         console.log(error)
@@ -171,6 +176,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           </FieldGroup>
         </form>
       </CardContent>
+      <ToastContainer position='top-center' />
     </Card>
   )
 }

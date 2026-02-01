@@ -55,10 +55,10 @@ export function LoginForm({
           setformError(error?.message || null)
         }
         else {
-          redirect("/home")
+          redirect("/")
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
 

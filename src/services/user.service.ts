@@ -23,7 +23,28 @@ const getSession = async () => {
 
 
 }
+const getUserDetails = async () => {
+    try {
+        const cookieStore = await cookies();
+
+        const result = await fetch(`${env.BACKEND_URL}/api/user/profile`, {
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            cache: 'no-store'
+        }).then(res => res.json());
+        if (!result.ok) {
+            return { data: null, error: "Something went wrong!" }
+        }
+        else {
+            return { data: result.data, error: null };
+        }
+    } catch (error) {
+        return { data: null, error: "Internal server error" }
+    }
+}
 
 export const userService = {
     getSession,
+    getUserDetails,
 }
