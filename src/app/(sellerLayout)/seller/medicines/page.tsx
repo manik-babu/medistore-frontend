@@ -1,7 +1,10 @@
-export default function Medicines() {
+import MainMedicine from "@/components/seller/medicines/MainMedicine";
+
+export const dynamic = "force-dynamic";
+export default function Page() {
     return (
         <div>
-            <h1>This is medicines page</h1>
+            <MainMedicine />
         </div>
     );
 }
