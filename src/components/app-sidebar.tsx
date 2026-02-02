@@ -21,44 +21,6 @@ import { UserRole } from "@/constants/userRole"
 import { adminRoutes } from "@/routes/admin.routes"
 import { sellerRoute } from "@/routes/seller.routes"
 
-// This is sample data.
-// const data = {
-//   navMain: [
-//     {
-//       title: "Dashboard",
-//       items: [
-//         {
-//           title: "Overview",
-//           url: "/seller/dashboard",
-//         },
-//       ],
-//     },
-//     {
-//       title: "Orders",
-//       items: [
-//         {
-//           title: "My Orders",
-//           url: "/seller/orders",
-//         },
-//       ],
-//     },
-//     {
-//       title: "Inventory",
-//       items: [
-//         {
-//           title: "All Medicines",
-//           url: "/seller/medicines",
-//         },
-//         {
-//           title: "Add Medicines",
-//           url: "/seller/medicines/add",
-//           isActive: true,
-//         },
-//       ],
-//     },
-//   ],
-// }
-
 export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = await userService.getSession();
   let routes: Route[] = [];

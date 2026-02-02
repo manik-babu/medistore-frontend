@@ -6,9 +6,12 @@ import { UserRole } from "./constants/userRole";
 export const proxy = async (request: NextRequest) => {
     const path = request.nextUrl.pathname;
     const { data } = await userService.getSession();
-    console.log(data)
+
     if (!data && (path.startsWith("/admin") || path.startsWith("/customer") || path.startsWith("/seller"))) {
         return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (data && (path.startsWith("/login") || path.startsWith("/signup"))) {
+        return NextResponse.redirect(new URL("/profile", request.url));
     }
     if (data && data.role !== UserRole.ADMIN && path.startsWith("/admin")) {
         return NextResponse.redirect(new URL("/error/permission", request.url));
