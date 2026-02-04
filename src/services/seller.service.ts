@@ -54,7 +54,6 @@ const addMedicine = async (data: AddMedicineProps) => {
         formData.append("categoryId", data.categoryId);
         formData.append("price", data.price.toString());
         const cookieStore = await cookies();
-        console.log(formData)
 
         const res = await fetch(`${BACKEND_URL}/api/seller/medicines`, {
             method: "POST",
@@ -75,7 +74,33 @@ const addMedicine = async (data: AddMedicineProps) => {
     }
 }
 
+const deleteMedicine = async (medicineId: string) => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${BACKEND_URL}/api/seller/medicines/${medicineId}`, {
+            method: "DELETE",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            next: {
+                tags: ["seller_medicine"]
+            }
+        }).then(res => res.json());
+        return {
+            data: res,
+            error: null,
+        };
+    } catch (error) {
+        return {
+            data: null,
+            error: error
+        }
+    }
+}
+
 export const sellerService = {
     getMedicines,
     addMedicine,
+    deleteMedicine,
 }

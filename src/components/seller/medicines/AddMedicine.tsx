@@ -4,6 +4,7 @@ import { addMedicine } from "@/actions/seller.actions";
 import { getCategories } from "@/actions/shop.actions";
 import { Button } from "@/components/ui/button";
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
 import { Field, FieldError, FieldGroup, FieldLabel, } from "@/components/ui/field";
 import { UploadImage } from "@/components/ui/ImageUploader";
 import { Input } from "@/components/ui/input";
@@ -148,20 +149,17 @@ export default function AddMedicine() {
                             return (
                                 <Select onValueChange={field.handleChange}>
                                     <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                                    <SelectTrigger className="select-trigger min-w-2xs">
-                                        <SelectValue aria-invalid={isInvalid} placeholder="Tap to select" />
+                                    <SelectTrigger className="select-trigger min-w-2xs" aria-invalid={isInvalid}>
+                                        <SelectValue placeholder="Tap to select" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {
-                                            !categories ? <SelectItem disabled value="x">
-                                                Loading...
-                                            </SelectItem>
-                                                :
-                                                categories.map((category) => (
-                                                    <SelectItem key={category.id} value={category.id}>
-                                                        {category.name}
-                                                    </SelectItem>
-                                                ))}
+                                            categories &&
+                                            categories.map((category) => (
+                                                <SelectItem key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
                                     </SelectContent>
                                     {isInvalid && <FieldError errors={field.state.meta.errors} />}
                                 </Select>
