@@ -36,6 +36,46 @@ const getMedicines = async ({ searchText, categoryId, sortBy, page }: { searchTe
     }
 }
 
+export type AddMedicineProps = {
+    image: File;
+    name: string;
+    description: string;
+    categoryId: string;
+    price: number;
+}
+
+const addMedicine = async (data: AddMedicineProps) => {
+    try {
+        const formData = new FormData();
+
+        formData.append("image", data.image);
+        formData.append("name", data.name);
+        formData.append("description", data.description);
+        formData.append("categoryId", data.categoryId);
+        formData.append("price", data.price.toString());
+        const cookieStore = await cookies();
+        console.log(formData)
+
+        const res = await fetch(`${BACKEND_URL}/api/seller/medicines`, {
+            method: "POST",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            body: formData
+        }).then(res => res.json());
+        return {
+            data: res,
+            error: null,
+        };
+    } catch (error) {
+        return {
+            data: null,
+            error: error
+        }
+    }
+}
+
 export const sellerService = {
     getMedicines,
+    addMedicine,
 }

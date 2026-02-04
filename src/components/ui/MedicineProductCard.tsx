@@ -14,7 +14,8 @@ import Image from "next/image"
 
 interface Product {
   id: string
-  image: string
+  imageUrl: string
+  imageCloudinaryId: string
   price: number
   isBanned: boolean
   isFeatured: boolean
@@ -61,7 +62,7 @@ export function MedicineProductCard({
       <CardHeader className="p-0 bg-amber-50 flex justify-center items-center rounded-md overflow-hidden border">
         <div className="relative aspect-square overflow-hidden bg-gray-100 h-full w-full">
           <Image
-            src={product.image.startsWith('http') ? product.image : `/images/default-medicine-image.jpg`}
+            src={product.imageUrl.startsWith('http') ? product.imageUrl : `/images/default-medicine-image.jpg`}
             alt={product.name}
             fill
             className="object-cover transition-transform group-hover:scale-105"
