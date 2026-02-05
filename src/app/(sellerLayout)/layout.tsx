@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import Sidebar from "@/components/layouts/Sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
                         </div>
                     </header>
                     {children}
+                    <Toaster position="top-center" />
                 </SidebarInset>
             </SidebarProvider>
         </div>

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
@@ -25,33 +26,31 @@ import z from "zod";
 import { RadioGroupDescription } from "./ui/radioGroup"
 import { UserRole } from "@/constants/userRole"
 import { redirect } from 'next/navigation';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email(),
   password: z.string().min(8, "Must be at least 8 characters long."),
+  role: z.enum([UserRole.CUSTOMER, UserRole.SELLER])
 })
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [formError, setformError] = useState<string | null>(null);
-  const [role, setrole] = useState<string>(UserRole.CUSTOMER)
   const form = useForm({
     defaultValues: {
       name: "",
       email: "",
-      password: ""
+      password: "",
+      role: UserRole.CUSTOMER
     },
     validators: {
       onSubmit: formSchema
     },
     onSubmit: async ({ value }) => {
-      console.log({ ...value, role });
       try {
-        const { data, error } = await authClient.signUp.email({
-          email: value.email,
-          password: value.password,
-          name: value.name
-        });
+        console.log({ value })
+        const { data, error } = await authClient.signUp.email(value);
 
         if (error) {
           console.error("Signup error:", error);
@@ -70,10 +69,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
 
   })
-  const handleRoleChange = (value: string) => {
-    console.log(value)
-    setrole(value);
-  }
   return (
     <Card {...props}>
       <CardHeader>
@@ -159,8 +154,35 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               }}
             />
             <FieldGroup>
-              <FieldLabel>Select how you'd like to use MediStore.</FieldLabel>
-              <RadioGroupDescription handleRoleChange={handleRoleChange} />
+              <form.Field
+                name="password"
+                children={(field) => {
+                  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel>Select how you'd like to use MediStore.</FieldLabel>
+                      <RadioGroup defaultValue={UserRole.CUSTOMER} onValueChange={field.handleChange} className="w-fit">
+                        <Field orientation="horizontal">
+                          <RadioGroupItem value={UserRole.CUSTOMER} id="desc-r1" />
+                          <FieldContent>
+                            <FieldLabel htmlFor="desc-r1">Customer</FieldLabel>
+                            <FieldDescription>
+                              Browse, purchase medicines and manage your orders.
+                            </FieldDescription>
+                          </FieldContent>
+                        </Field>
+                        <Field orientation="horizontal">
+                          <RadioGroupItem value={UserRole.SELLER} id="desc-r2" />
+                          <FieldContent>
+                            <FieldLabel htmlFor="desc-r2">Seller</FieldLabel>
+                            <FieldDescription>List and sell medicines, manage your pharmacy inventory.</FieldDescription>
+                          </FieldContent>
+                        </Field>
+                      </RadioGroup>
+                    </Field>
+                  )
+                }}
+              />
             </FieldGroup>
             <FieldGroup>
               <Field>

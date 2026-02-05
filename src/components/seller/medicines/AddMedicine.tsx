@@ -122,7 +122,7 @@ export default function AddMedicine() {
                 setfetchError(data.message);
             }
             else {
-                const medicineDetails = data.data.result;
+                const medicineDetails = data.data.medicine;
                 console.log(medicineDetails)
                 form.setFieldValue("name", medicineDetails.name);
                 form.setFieldValue("description", medicineDetails.description);

@@ -1,0 +1,296 @@
+"use client"
+
+import * as React from "react"
+import { useState } from "react"
+import { Minus, Plus, ShoppingCart, Star, Package, Store, Calendar, Heart } from "lucide-react"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
+import { getMedicineById } from "@/actions/shop.actions"
+
+interface MedicineData {
+  medicine: {
+    id: string
+    imageUrl: string
+    imageCloudinaryId: string
+    price: string
+    isBanned: boolean
+    isFeatured: boolean
+    authorId: string
+    name: string
+    description: string
+    categoryId: string
+    createdAt: string
+    updatedAt: string
+    category: {
+      id: string
+      name: string
+    }
+    _count: {
+      carts: number
+    }
+    author: {
+      id: string
+      storeName: string
+      image: string | null
+    }
+  }
+  ratingAvgAndCount: {
+    _avg: {
+      rating: number | null
+    }
+    _count: number
+  }
+  ratingCount: any[]
+}
+
+interface MedicineDetailsPageProps {
+  medicineId: string;
+  handleAddToCart: (medicineId: string, quantity: number) => Promise<void>
+  className?: string
+}
+
+export function MedicineDetailsPage({
+  medicineId,
+  handleAddToCart,
+  className = "",
+}: MedicineDetailsPageProps) {
+  const [data, setData] = useState<MedicineData | null>(null)
+  const [quantity, setQuantity] = React.useState(1)
+  const [isAddingToCart, setIsAddingToCart] = React.useState(false)
+
+  const formatPrice = (price: string) => {
+    return `$${parseFloat(price).toFixed(2)}`
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  }
+
+  const handleQuantityChange = (type: "increase" | "decrease") => {
+    if (type === "increase") {
+      setQuantity((prev) => prev + 1)
+    } else if (type === "decrease" && quantity > 1) {
+      setQuantity((prev) => prev - 1)
+    }
+  }
+
+
+
+  const getMedicineDetails = async () => {
+    const { data: res, error } = await getMedicineById(medicineId);
+    if (error) {
+      console.log(error)
+      return;
+    }
+    if (res.ok) {
+      setData(res.data);
+    }
+    else {
+      console.log(res.data.message)
+    }
+
+  }
+
+  React.useEffect(() => {
+    getMedicineDetails();
+  }, []);
+  if (!data) {
+    return <h1>Loading...</h1>
+  }
+
+  return (
+    <div className={`container mx-auto px-4 py-8 max-w-7xl ${className}`}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column - Image */}
+        <div className="space-y-4">
+          <Card className="overflow-hidden">
+            <CardContent className="p-0">
+              <div className="relative aspect-square bg-gray-100">
+                <Image
+                  src={data.medicine.imageUrl}
+                  alt={data.medicine.name}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                {data.medicine.isFeatured && (
+                  <Badge className="absolute top-4 left-4 bg-blue-500">
+                    Featured
+                  </Badge>
+                )}
+                {data.medicine.isBanned && (
+                  <Badge variant="destructive" className="absolute top-4 right-4">
+                    Unavailable
+                  </Badge>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Additional Info Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Store className="h-5 w-5" />
+                Store Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Sold by</span>
+                <span className="font-medium">{data.medicine.author.storeName}</span>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Total Sold</span>
+                <span className="font-medium">{data.medicine._count.carts} sold</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Details */}
+        <Card className=" p-6">
+          {/* Product Title & Category */}
+          <div>
+            <Badge variant="outline" className="mb-2">
+              {data.medicine.category.name}
+            </Badge>
+            <h1 className="text-3xl font-bold mb-2">{data.medicine.name}</h1>
+
+            {/* Rating */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {data.ratingAvgAndCount._avg.rating ? data.ratingAvgAndCount._avg.rating.toFixed(1) : "No ratings"} (
+                {data.ratingAvgAndCount._count} {data.ratingAvgAndCount._count === 1 ? "review" : "reviews"})
+              </span>
+            </div>
+          </div>
+
+          {/* Price */}
+          <div>
+            <CardContent className="p-0">
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold text-primary">
+                  {formatPrice(data.medicine.price)}
+                </span>
+              </div>
+            </CardContent>
+          </div>
+
+
+
+          {/* Quantity Selector & Add to Cart */}
+          <div>
+            <CardContent className="p-0 space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Quantity</label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleQuantityChange("decrease")}
+                    disabled={quantity <= 1 || data.medicine.isBanned}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <div className="w-16 text-center">
+                    <span className="text-2xl font-semibold">{quantity}</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleQuantityChange("increase")}
+                    disabled={data.medicine.isBanned}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  className="flex-1 cursor-pointer"
+                  size="lg"
+                  onClick={() => handleAddToCart(medicineId, quantity)}
+                  disabled={isAddingToCart || data.medicine.isBanned}
+                >
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  {isAddingToCart
+                    ? "Adding..."
+                    : data.medicine.isBanned
+                      ? "Unavailable"
+                      : "Add to Cart"}
+                </Button>
+              </div>
+
+              {data.medicine.isBanned && (
+                <p className="text-sm text-destructive text-center">
+                  This product is currently unavailable
+                </p>
+              )}
+            </CardContent>
+          </div>
+
+          {/* Description */}
+          <div>
+            <CardHeader className="p-0">
+              <CardTitle className="text-lg">Description</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <p className="text-muted-foreground leading-relaxed">
+                {data.medicine.description}
+              </p>
+            </CardContent>
+          </div>
+
+          {/* Product Stats */}
+          <div>
+            <CardHeader className="p-0">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Package className="h-5 w-5" />
+                Product Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 p-0">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Category</span>
+                <span className="font-medium">{data.medicine.category.name}</span>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Total Sold</span>
+                <span className="font-medium">{data.medicine._count.carts} sold</span>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Added on</span>
+                <span className="font-medium">{formatDate(data.medicine.createdAt)}</span>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Last Updated</span>
+                <span className="font-medium">{formatDate(data.medicine.updatedAt)}</span>
+              </div>
+            </CardContent>
+          </div>
+        </Card>
+      </div>
+    </div>
+  )
+}

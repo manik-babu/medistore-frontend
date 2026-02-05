@@ -11,6 +11,12 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
+import { SheetContent, SheetTrigger, Sheet, SheetTitle, SheetClose } from "./sheet"
+import { MedicineDetailsPage } from "../shop/MedicineDetailsPage"
+import { ArrowLeft } from "lucide-react"
+import { toast } from "sonner"
+import { Toaster } from "./sonner"
+import { getSession } from "@/actions/user.action"
 
 interface Product {
   id: string
@@ -38,23 +44,48 @@ interface Product {
 
 interface MedicineProductCardProps {
   product: Product
-  onViewDetails?: (productId: string) => void
-  onAddToCart?: (productId: string) => void
   className?: string
 }
 
 export function MedicineProductCard({
   product,
-  onViewDetails,
-  onAddToCart,
   className = "",
 }: MedicineProductCardProps) {
-  const handleViewDetails = () => {
-    onViewDetails?.(product.id)
-  }
+  const handleAddToCart = async (medicineId: string, quantity: number) => {
+    // setIsAddingToCart(true)
+    try {
+      const { data, error } = await getSession();
+      if (!data) {
+        toast.error("Login required");
+        return;
+      }
 
-  const handleAddToCart = () => {
-    onAddToCart?.(product.id)
+      const t = toast.success("Added to the cart")
+      // if (onAddToCart) {
+      //   await onAddToCart(medicine.id, quantity)
+      // } else {
+      //   // Default behavior - call API
+      //   const response = await fetch("/api/cart", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({
+      //       medicineId: medicine.id,
+      //       quantity,
+      //     }),
+      //   })
+
+      //   if (response.ok) {
+      //     toast.success(`Added ${quantity} item(s) to cart!`)
+      //   } else {
+      //     toast.error("Failed to add to cart")
+      //   }
+      // }
+    } catch (error) {
+      console.error("Error adding to cart:", error)
+      toast.error("Something went wrong")
+    } finally {
+      // setIsAddingToCart(false)
+    }
   }
 
   return (
@@ -93,22 +124,37 @@ export function MedicineProductCard({
       </CardContent>
 
       <div className="gap-2 flex justify-between">
+        <Sheet>
+          <SheetTrigger className="flex-1" asChild>
+            <Button
+              variant="outline"
+              className="w-full cursor-pointer"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Details
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[95vh] scroll">
+            <SheetTitle className="pl-14 p-2">
+              <SheetClose asChild>
+                <Button variant="outline" className="rounded-full cursor-pointer"> <ArrowLeft /> Back to product page</Button>
+              </SheetClose>
+            </SheetTitle>
+            <div className="overflow-scroll">
+              <MedicineDetailsPage medicineId={product.id} handleAddToCart={handleAddToCart} />
+            </div>
+          </SheetContent>
+        </Sheet>
+
         <Button
-          variant="outline"
           className="flex-1 cursor-pointer"
-          onClick={handleViewDetails}
-        >
-          <Eye className="h-4 w-4 mr-2" />
-          Details
-        </Button>
-        <Button
-          className="flex-1 cursor-pointer"
-          onClick={handleAddToCart}
+          onClick={() => handleAddToCart(product.id, 1)}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
           Add to Cart
         </Button>
       </div>
+      <Toaster position="top-center" />
     </Card>
   )
 }
