@@ -6,7 +6,7 @@ export default function RoleAction({ role, className }: { role: string; classNam
     if (role === UserRole.ADMIN) {
         return (
             <Link href="/admin/dashboard" className={className}>
-                <LayoutDashboard />
+                <LayoutDashboard /> Dashboard
             </Link>
         )
 

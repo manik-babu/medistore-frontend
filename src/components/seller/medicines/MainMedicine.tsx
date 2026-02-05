@@ -1,10 +1,9 @@
 "use client"
 
 import { getMedicines } from "@/actions/seller.actions";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Searchbar } from "./Searchbar";
 import MedicineContainer from "./MedicineContainer";
-import { PaginationIconsOnly } from "./Pagination";
 
 export default function MainMedicine() {
     const [medicines, setmedicines] = useState<any>();

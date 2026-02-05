@@ -55,7 +55,33 @@ const getMedicines = async ({ searchText, categoryId, sortBy }: { searchText: st
     }
 }
 
+const getMedicineById = async (medicineId: string) => {
+    try {
+        const url = new URL(`${BACKEND_URL}/api/medicines/${medicineId}`);
+
+        const data = await fetch(url.toString(), {
+            cache: "no-store"
+        }).then(res => res.json());
+
+        if (data) {
+            return {
+                data,
+                error: null
+            }
+        }
+        else {
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        return {
+            data: null,
+            error: error
+        }
+    }
+}
+
 export const shopService = {
     getCategories,
     getMedicines,
+    getMedicineById,
 }

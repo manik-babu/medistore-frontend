@@ -23,8 +23,10 @@ import {
 import { Spinner } from './spinner'
 import { toast, ToastContainer } from 'react-toastify'
 import { deleteMedicine } from '@/actions/seller.actions'
+import { useRouter } from 'next/navigation'
 
 export function DropdownMenuBasic({ medicine }: { medicine: { medicineId: string; name: string; } }) {
+    const router = useRouter();
     const [deleting, setdeleting] = useState<boolean>(false)
     const [dialogOpen, setdialogOpen] = useState<boolean>(false);
     const handleDeleteClick = () => {
@@ -51,10 +53,6 @@ export function DropdownMenuBasic({ medicine }: { medicine: { medicineId: string
         setdeleting(false);
         setdialogOpen(false);
     }
-    const handleEdit = async () => {
-        console.log("Edit medicine " + medicine.name);
-
-    }
     return (
         <>
             <DropdownMenu>
@@ -62,7 +60,7 @@ export function DropdownMenuBasic({ medicine }: { medicine: { medicineId: string
                     <Ellipsis className="cursor-pointer" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                    <DropdownMenuItem onClick={handleEdit}><Edit /> Edit</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push(`/seller/medicines/add?medicineId=${medicine.medicineId}`)}><Edit /> Edit</DropdownMenuItem>
                     <DropdownMenuItem onClick={handleDeleteClick} variant={"destructive"}><Trash2 /> Delete</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

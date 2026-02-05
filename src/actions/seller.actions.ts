@@ -12,6 +12,16 @@ export const addMedicine = async (data: AddMedicineProps) => {
 }
 
 export const deleteMedicine = async (medicineId: string) => {
-    revalidateTag("seller_medicine", "max");
     return await sellerService.deleteMedicine(medicineId);
+}
+
+export type UpdateMedicineProps = {
+    name: string;
+    description: string;
+    categoryId: string;
+    price: number;
+}
+
+export const updateMedicine = async (data: UpdateMedicineProps, medicineId: string) => {
+    return await sellerService.updateMedicine(data, medicineId);
 }

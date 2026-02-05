@@ -1,4 +1,6 @@
+import { UpdateMedicineProps } from "@/actions/seller.actions";
 import { env } from "@/env";
+import { revalidateTag, updateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 const BACKEND_URL = env.BACKEND_URL;
@@ -16,7 +18,9 @@ const getMedicines = async ({ searchText, categoryId, sortBy, page }: { searchTe
             headers: {
                 Cookie: cookieStore.toString()
             },
-            cache: "no-store"
+            next: {
+                tags: ["sellerMedicine"]
+            }
         }).then(res => res.json());
 
         if (data.ok) {
@@ -83,9 +87,35 @@ const deleteMedicine = async (medicineId: string) => {
             headers: {
                 Cookie: cookieStore.toString()
             },
-            next: {
-                tags: ["seller_medicine"]
-            }
+
+        }).then(res => res.json());
+        if (res.ok) {
+            updateTag("sellerMedicine");
+        }
+        return {
+            data: res,
+            error: null,
+        };
+    } catch (error) {
+        return {
+            data: null,
+            error: error
+        }
+    }
+}
+
+const updateMedicine = async (data: UpdateMedicineProps, medicineId: string) => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${BACKEND_URL}/api/seller/medicines/${medicineId}`, {
+            method: "PUT",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(data)
+
         }).then(res => res.json());
         return {
             data: res,
@@ -99,8 +129,11 @@ const deleteMedicine = async (medicineId: string) => {
     }
 }
 
+
+
 export const sellerService = {
     getMedicines,
     addMedicine,
     deleteMedicine,
+    updateMedicine
 }
