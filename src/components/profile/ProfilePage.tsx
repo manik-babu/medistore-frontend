@@ -14,6 +14,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { signOut } from "@/lib/auth-client"
+import { useAppDispatch } from "@/redux/hooks"
+import { setUser } from "@/redux/slice/userSlice"
+import { setCartValue } from "@/redux/slice/cartSlice"
 
 type UserProfile = {
   id: string
@@ -27,6 +30,9 @@ type UserProfile = {
   createdAt: string
   storeName?: string
   image?: string;
+  _count: {
+    carts: number;
+  }
 }
 
 interface ProfilePageProps {
@@ -35,7 +41,7 @@ interface ProfilePageProps {
 }
 
 export function ProfilePage({ user, className = "" }: ProfilePageProps) {
-
+  const dispatch = useAppDispatch();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -56,12 +62,19 @@ export function ProfilePage({ user, className = "" }: ProfilePageProps) {
         return "bg-gray-500"
     }
   }
+  const handleLogout = async () => {
+    await signOut();
+    dispatch(setUser(null));
+  }
+  React.useEffect(() => {
+    dispatch(setCartValue(user._count.carts));
+  }, []);
 
   return (
     <div className={`container mx-auto px-4 py-8 max-w-4xl ${className}`}>
       {/* Header Card */}
       <CardHeader className="flex justify-end mb-4">
-        <Button onClick={signOut} className="w-fit bg-red-500 hover:bg-red-600 cursor-pointer">
+        <Button onClick={handleLogout} className="w-fit bg-red-500 hover:bg-red-600 cursor-pointer">
           <LogOut className="h-4 w-4 mr-2" />
           Logout
         </Button>

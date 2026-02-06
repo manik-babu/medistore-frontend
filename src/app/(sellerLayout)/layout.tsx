@@ -1,5 +1,4 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import Sidebar from "@/components/layouts/Sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";

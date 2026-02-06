@@ -23,6 +23,11 @@ import { useForm } from "@tanstack/react-form"
 import z from "zod";
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { getSession } from "@/actions/user.action"
+import { toast } from "sonner"
+import { useAppDispatch } from "@/redux/hooks"
+import { Toaster } from "./ui/sonner"
+import { setUser } from "@/redux/slice/userSlice"
 
 const formSchema = z.object({
   email: z.email(),
@@ -34,6 +39,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const dispatch = useAppDispatch();
   const [formError, setformError] = useState<string | null>(null)
   const router = useRouter()
   const form = useForm({
@@ -54,11 +60,17 @@ export function LoginForm({
           setformError(error?.message || null)
         }
         else {
-          console.log("Login success")
-          router.push("/")
+          const { data, error } = await getSession();
+          if (error || !data) {
+            toast.error("Login faild");
+            return;
+          }
+          dispatch(setUser({ id: data.id, name: data.name, role: data.role, image: data.image }));
+          router.push("/profile");
         }
       } catch (error) {
         console.log(error);
+        toast.error("Login faild!");
       }
     },
 
@@ -140,6 +152,7 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
+      <Toaster position="top-center" />
     </div>
   )
 }

@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { ShoppingCart, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +15,12 @@ import { MedicineDetailsPage } from "../shop/MedicineDetailsPage"
 import { ArrowLeft } from "lucide-react"
 import { toast } from "sonner"
 import { Toaster } from "./sonner"
-import { getSession } from "@/actions/user.action"
+import { addToCart, getSession } from "@/actions/user.action"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { UserRole } from "@/constants/userRole"
+import { increment } from "@/redux/slice/cartSlice"
+import { useState } from "react"
+import { Spinner } from "./spinner"
 
 interface Product {
   id: string
@@ -51,40 +55,36 @@ export function MedicineProductCard({
   product,
   className = "",
 }: MedicineProductCardProps) {
+  const dispatch = useAppDispatch();
+  const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
+
+
+
   const handleAddToCart = async (medicineId: string, quantity: number) => {
-    // setIsAddingToCart(true)
     try {
+      setIsAddingToCart(true)
       const { data, error } = await getSession();
       if (!data) {
         toast.error("Login required");
         return;
       }
-
-      const t = toast.success("Added to the cart")
-      // if (onAddToCart) {
-      //   await onAddToCart(medicine.id, quantity)
-      // } else {
-      //   // Default behavior - call API
-      //   const response = await fetch("/api/cart", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({
-      //       medicineId: medicine.id,
-      //       quantity,
-      //     }),
-      //   })
-
-      //   if (response.ok) {
-      //     toast.success(`Added ${quantity} item(s) to cart!`)
-      //   } else {
-      //     toast.error("Failed to add to cart")
-      //   }
-      // }
+      if (data && data.role !== UserRole.CUSTOMER) {
+        toast.error("Only customer can buy")
+        return;
+      }
+      const res = await addToCart(medicineId, quantity);
+      if (res.data.ok) {
+        toast.success("Added to the cart")
+        dispatch(increment());
+      }
+      else {
+        toast.error(res.data.message);
+      }
     } catch (error) {
       console.error("Error adding to cart:", error)
       toast.error("Something went wrong")
     } finally {
-      // setIsAddingToCart(false)
+      setIsAddingToCart(false)
     }
   }
 
@@ -145,14 +145,23 @@ export function MedicineProductCard({
             </div>
           </SheetContent>
         </Sheet>
-
-        <Button
-          className="flex-1 cursor-pointer"
-          onClick={() => handleAddToCart(product.id, 1)}
-        >
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Add to Cart
-        </Button>
+        {
+          isAddingToCart ?
+            <Button
+              className="flex-1 cursor-pointer"
+              disabled
+            >
+              Adding <Spinner />
+            </Button>
+            :
+            <Button
+              className="flex-1 cursor-pointer"
+              onClick={() => handleAddToCart(product.id, 1)}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Add to Cart
+            </Button>
+        }
       </div>
       <Toaster position="top-center" />
     </Card>

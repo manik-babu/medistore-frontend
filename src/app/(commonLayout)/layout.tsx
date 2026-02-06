@@ -1,4 +1,5 @@
 import Navbar from "@/components/layouts/Navbar";
+import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({
         <div>
             <Navbar />
             {children}
+            <Toaster />
         </div>
     );
 }

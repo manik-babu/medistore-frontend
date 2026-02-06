@@ -43,8 +43,34 @@ const getUserDetails = async () => {
         return { data: null, error: "Internal server error" }
     }
 }
+const addToCart = async (medicineId: string, quantity: number) => {
+    try {
+        const cookieStore = await cookies();
+
+        const response = await fetch(`${env.BACKEND_URL}/api/carts`, {
+            method: "POST",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                medicineId,
+                quantity,
+            }),
+        }).then(res => res.json());
+
+        return {
+            data: response,
+            error: null
+        }
+    } catch (error) {
+        return { data: null, error: "Internal server error" }
+    }
+}
+
 
 export const userService = {
     getSession,
     getUserDetails,
+    addToCart,
 }
