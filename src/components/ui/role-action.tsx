@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { getUserDetails } from "@/actions/user.action";
 import { toast } from "sonner";
 import { setCartValue } from "@/redux/slice/cartSlice";
+import { Button } from "./button";
 
 export default function RoleAction({ role, className }: { role: string; className: string }) {
     const cartCount = useAppSelector((state) => state.cart.value);
@@ -30,23 +31,33 @@ export default function RoleAction({ role, className }: { role: string; classNam
     if (role === UserRole.ADMIN) {
         return (
             <Link href="/admin/dashboard" className={className}>
-                <LayoutDashboard /> Dashboard
+                <Button variant={"ghost"} className="cursor-pointer">
+                    Dashboard
+                </Button>
             </Link>
         )
 
     }
     else if (role === UserRole.CUSTOMER) {
         return (
-            <Link href="/customer/cart" className={`${className} relative`}>
-                <Badge className="absolute -top-1 -right-1 w-fit h-4">{cartCount}</Badge>
-                <ShoppingCart />
+            <Link href="/customer/carts">
+                <Button variant="ghost" size="icon" className="relative cursor-pointer">
+                    <ShoppingCart className="h-5 w-5" />
+                    {cartCount > 0 && (
+                        <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                            {cartCount}
+                        </Badge>
+                    )}
+                </Button>
             </Link>
-        )
+        );
     }
     else {
         return (
             <Link href="/seller/dashboard" className={className}>
-                <LayoutDashboard /> Dashboard
+                <Button variant={"ghost"} className="cursor-pointer">
+                    Dashboard
+                </Button>
             </Link>
         )
     }

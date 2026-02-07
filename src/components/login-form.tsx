@@ -28,6 +28,7 @@ import { toast } from "sonner"
 import { useAppDispatch } from "@/redux/hooks"
 import { Toaster } from "./ui/sonner"
 import { setUser } from "@/redux/slice/userSlice"
+import { Spinner } from "./ui/spinner"
 
 const formSchema = z.object({
   email: z.email(),
@@ -40,7 +41,8 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const dispatch = useAppDispatch();
-  const [formError, setformError] = useState<string | null>(null)
+  const [formError, setformError] = useState<string | null>(null);
+  const [loading, setloading] = useState<boolean>(false)
   const router = useRouter()
   const form = useForm({
     defaultValues: {
@@ -52,17 +54,16 @@ export function LoginForm({
     },
     onSubmit: async ({ value }) => {
       try {
-        const { data, error } = await authClient.signIn.email({
-          email: value.email,
-          password: value.password
-        });
+        setloading(true);
+        const { data, error } = await authClient.signIn.email(value);
+        setloading(false)
         if (error) {
-          setformError(error?.message || null)
+          setformError(error?.message || "Something went wrong")
         }
         else {
           const { data, error } = await getSession();
           if (error || !data) {
-            toast.error("Login faild");
+            toast.error("Login faild! Try again");
             return;
           }
           dispatch(setUser({ id: data.id, name: data.name, role: data.role, image: data.image }));
@@ -70,7 +71,7 @@ export function LoginForm({
         }
       } catch (error) {
         console.log(error);
-        toast.error("Login faild!");
+        toast.error("Login faild! Try again");
       }
     },
 
@@ -140,7 +141,12 @@ export function LoginForm({
                 }}
               />
               <Field>
-                <Button type="submit" className="cursor-pointer">Login</Button>
+                {
+                  loading ?
+                    <Button disabled>Logging in <Spinner /></Button>
+                    :
+                    <Button type="submit" className="cursor-pointer">Login</Button>
+                }
                 <Button onClick={signInWithGoogle} variant="outline" type="button" className="cursor-pointer">
                   Login with Google
                 </Button>

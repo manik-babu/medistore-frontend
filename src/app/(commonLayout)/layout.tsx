@@ -17,7 +17,6 @@ export default function RootLayout({
         <div>
             <Navbar />
             {children}
-            <Toaster />
         </div>
     );
 }

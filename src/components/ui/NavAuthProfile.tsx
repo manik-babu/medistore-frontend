@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setUser } from "@/redux/slice/userSlice";
 import { useEffect } from "react";
 import { getSession } from "@/actions/user.action";
+import { ModeToggle } from "./modeToggle";
 
 export default function NavAuthProfile() {
     const dispatch = useAppDispatch()
@@ -22,8 +23,14 @@ export default function NavAuthProfile() {
         getSessionData();
     }, []);
     if (session) {
-        return <NavProfile session={session} />
+        return <>
+            <NavProfile session={session} />
+            <ModeToggle />
+        </>
     }
     else
-        return <NavAuth />
+        return <>
+            <ModeToggle />
+            <NavAuth />
+        </>
 }

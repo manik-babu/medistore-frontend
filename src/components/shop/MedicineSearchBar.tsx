@@ -96,7 +96,7 @@ export function MedicineSearchBar({ onSearch, className }: MedicineSearchBarProp
   }, [])
 
   return (
-    <div className={`w-full space-y-4 ${className} mt-4 px-[5vw]`}>
+    <div className={`w-full space-y-4 ${className} mt-4`}>
       {/* Main Search Bar */}
       <div className="flex items-center flex-row gap-2 w-full h-12">
         {/* Search Input */}

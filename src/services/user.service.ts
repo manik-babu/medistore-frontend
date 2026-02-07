@@ -67,10 +67,77 @@ const addToCart = async (medicineId: string, quantity: number) => {
         return { data: null, error: "Internal server error" }
     }
 }
+const getCarts = async () => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${env.BACKEND_URL}/api/carts`, {
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            cache: 'no-store'
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
+
+const deleteCart = async (cartId: string) => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${env.BACKEND_URL}/api/carts/${cartId}`, {
+            method: "DELETE",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            cache: 'no-store'
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
+const updateCartQuantity = async (cartId: string, quantity: number) => {
+    try {
+        const cookieStore = await cookies();
+        const res = await fetch(`${env.BACKEND_URL}/api/carts/${cartId}`, {
+            method: "PATCH",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "content-type": "application/json"
+            },
+            cache: 'no-store',
+            body: JSON.stringify({ quantity })
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
 
 
 export const userService = {
     getSession,
     getUserDetails,
     addToCart,
+    getCarts,
+    deleteCart,
+    updateCartQuantity,
 }

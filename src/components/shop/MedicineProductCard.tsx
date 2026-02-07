@@ -10,17 +10,17 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
-import { SheetContent, SheetTrigger, Sheet, SheetTitle, SheetClose } from "./sheet"
-import { MedicineDetailsPage } from "../shop/MedicineDetailsPage"
+import { SheetContent, SheetTrigger, Sheet, SheetTitle, SheetClose } from "../ui/sheet"
+import { MedicineDetailsPage } from "./MedicineDetailsPage"
 import { ArrowLeft } from "lucide-react"
 import { toast } from "sonner"
-import { Toaster } from "./sonner"
+import { Toaster } from "../ui/sonner"
 import { addToCart, getSession } from "@/actions/user.action"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { UserRole } from "@/constants/userRole"
 import { increment } from "@/redux/slice/cartSlice"
 import { useState } from "react"
-import { Spinner } from "./spinner"
+import { Spinner } from "../ui/spinner"
 
 interface Product {
   id: string
@@ -141,7 +141,7 @@ export function MedicineProductCard({
               </SheetClose>
             </SheetTitle>
             <div className="overflow-scroll">
-              <MedicineDetailsPage medicineId={product.id} handleAddToCart={handleAddToCart} />
+              <MedicineDetailsPage medicineId={product.id} handleAddToCart={handleAddToCart} isAddingToCart={isAddingToCart} />
             </div>
           </SheetContent>
         </Sheet>

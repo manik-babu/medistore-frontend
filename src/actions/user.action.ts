@@ -12,3 +12,15 @@ export const addToCart = async (medicineId: string, quantity: number) => {
 export const getUserDetails = async () => {
     return await userService.getUserDetails();
 }
+
+export const getCarts = async () => {
+    return await userService.getCarts();
+}
+
+export const deleteCart = async (cartId: string) => {
+    return await userService.deleteCart(cartId);
+}
+
+export const updateCartQuantity = async (cartId: string, quantity: number) => {
+    return await userService.updateCartQuantity(cartId, quantity)
+}

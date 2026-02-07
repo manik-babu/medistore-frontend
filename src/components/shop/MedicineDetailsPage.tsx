@@ -1,7 +1,6 @@
 "use client"
 
-import * as React from "react"
-import { useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Minus, Plus, ShoppingCart, Star, Package, Store, Calendar, Heart } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -16,6 +15,8 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import { getMedicineById } from "@/actions/shop.actions"
+import { Toaster } from "../ui/sonner"
+import { Spinner } from "../ui/spinner"
 
 interface MedicineData {
   medicine: {
@@ -56,17 +57,18 @@ interface MedicineData {
 interface MedicineDetailsPageProps {
   medicineId: string;
   handleAddToCart: (medicineId: string, quantity: number) => Promise<void>
-  className?: string
+  className?: string;
+  isAddingToCart: boolean;
 }
 
 export function MedicineDetailsPage({
   medicineId,
   handleAddToCart,
   className = "",
+  isAddingToCart,
 }: MedicineDetailsPageProps) {
   const [data, setData] = useState<MedicineData | null>(null)
-  const [quantity, setQuantity] = React.useState(1)
-  const [isAddingToCart, setIsAddingToCart] = React.useState(false)
+  const [quantity, setQuantity] = useState(1)
 
   const formatPrice = (price: string) => {
     return `$${parseFloat(price).toFixed(2)}`
@@ -93,19 +95,19 @@ export function MedicineDetailsPage({
   const getMedicineDetails = async () => {
     const { data: res, error } = await getMedicineById(medicineId);
     if (error) {
-      console.log(error)
+      toast.error("Unable to load medicine details")
       return;
     }
     if (res.ok) {
       setData(res.data);
     }
     else {
-      console.log(res.data.message)
+      toast.error(res.data.message);
     }
 
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     getMedicineDetails();
   }, []);
   if (!data) {
@@ -224,19 +226,25 @@ export function MedicineDetailsPage({
               </div>
 
               <div className="flex gap-2">
-                <Button
-                  className="flex-1 cursor-pointer"
-                  size="lg"
-                  onClick={() => handleAddToCart(medicineId, quantity)}
-                  disabled={isAddingToCart || data.medicine.isBanned}
-                >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  {isAddingToCart
-                    ? "Adding..."
-                    : data.medicine.isBanned
-                      ? "Unavailable"
-                      : "Add to Cart"}
-                </Button>
+                {
+                  isAddingToCart ?
+                    <Button
+                      className="flex-1 cursor-pointer"
+                      size="lg"
+                      disabled
+                    >
+                      Adding <Spinner />
+                    </Button>
+                    :
+                    <Button
+                      className="flex-1 cursor-pointer"
+                      size="lg"
+                      onClick={() => handleAddToCart(medicineId, quantity)}
+                    >
+                      <ShoppingCart className="h-5 w-5 mr-2" />
+                      Add to Cart
+                    </Button>
+                }
               </div>
 
               {data.medicine.isBanned && (
