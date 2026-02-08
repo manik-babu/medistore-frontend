@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { OrderData } from "@/types";
 import { cookies } from "next/headers"
 
 
@@ -132,6 +133,29 @@ const updateCartQuantity = async (cartId: string, quantity: number) => {
     }
 }
 
+const placeOrder = async (data: OrderData) => {
+    try {
+        const cookieStore = await cookies();
+        const res = await fetch(`${env.BACKEND_URL}/api/orders`, {
+            method: "POST",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "content-type": "application/json"
+            },
+            cache: 'no-store',
+            body: JSON.stringify(data)
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
+
 
 export const userService = {
     getSession,
@@ -140,4 +164,5 @@ export const userService = {
     getCarts,
     deleteCart,
     updateCartQuantity,
+    placeOrder,
 }

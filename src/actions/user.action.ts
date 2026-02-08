@@ -1,6 +1,7 @@
 "use server"
 
 import { userService } from "@/services/user.service"
+import { OrderData } from "@/types";
 
 export const getSession = async () => {
     return await userService.getSession();
@@ -23,4 +24,7 @@ export const deleteCart = async (cartId: string) => {
 
 export const updateCartQuantity = async (cartId: string, quantity: number) => {
     return await userService.updateCartQuantity(cartId, quantity)
+}
+export const placeOrder = async (data: OrderData) => {
+    return await userService.placeOrder(data);
 }

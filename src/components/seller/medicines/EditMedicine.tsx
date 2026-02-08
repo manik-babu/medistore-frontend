@@ -5,7 +5,6 @@ import { getCategories, getMedicineById } from "@/actions/shop.actions";
 import { Button } from "@/components/ui/button";
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel, } from "@/components/ui/field";
-import { UploadImage } from "@/components/ui/ImageUploader";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";

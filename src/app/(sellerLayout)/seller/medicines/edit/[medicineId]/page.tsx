@@ -1,6 +1,6 @@
 import EditMedicine from "@/components/seller/medicines/EditMedicine";
 import { shopService } from "@/services/shop.service";
-
+export const dynamic = "force-dynamic"
 export default async function MedicineEdit({ params }: { params: Promise<{ medicineId: string }> }) {
     const { medicineId } = await params;
 
