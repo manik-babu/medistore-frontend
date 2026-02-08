@@ -4,15 +4,15 @@ import { addMedicine, updateMedicine } from "@/actions/seller.actions";
 import { getCategories, getMedicineById } from "@/actions/shop.actions";
 import { Button } from "@/components/ui/button";
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
 import { Field, FieldError, FieldGroup, FieldLabel, } from "@/components/ui/field";
 import { UploadImage } from "@/components/ui/ImageUploader";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { MedicineData } from "@/types/medicine";
 import { useForm } from "@tanstack/react-form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import z from "zod";
@@ -22,51 +22,45 @@ const formSchema = z.object({
     description: z.string().min(1, "Description is required"),
     categoryId: z.string().min(1, "Category is required"),
     price: z.string().min(1, "Price is required")
-})
-export default function AddMedicine() {
+});
+export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
     const router = useRouter();
     const [loading, setloading] = useState<boolean>(false)
     const [categories, setCategories] = useState<{ id: string; name: string; }[] | null>(null);
     const [formError, setformError] = useState<null | string>(null);
-    const [imageError, setimageError] = useState<string | null>(null);
-    const [image, setimage] = useState<File | null>(null);
     const form = useForm({
         defaultValues: {
-            name: "",
-            description: "",
-            categoryId: "",
-            price: ""
+            name: medicine.name,
+            description: medicine.description,
+            categoryId: medicine.category.id,
+            price: medicine.price
         },
         validators: {
             onSubmit: formSchema
         },
         onSubmit: async ({ value }) => {
             try {
-                if (!image) {
-                    setimageError("Image is required");
-                    return;
-                }
                 const price = Number(value.price);
                 if (price < 0) {
                     form.setFieldMeta("price", (prev) => ({
                         ...prev,
-                        error: "Price must be positive",
+                        error: "Price mus be positive number",
                         isTouched: true
                     }));
                     return;
                 }
                 setloading(true);
-                const { data, error } = await addMedicine({
-                    image: image as File,
+                const { data, error } = await updateMedicine({
                     name: value.name,
                     description: value.description,
                     categoryId: value.categoryId,
                     price: price
-                });
+                }, medicine.id);
                 setloading(false);
-                if (data && !error) {
+                if (data) {
                     if (data.ok) {
                         toast.success(data.message);
+                        router.back();
                     }
                     else {
                         toast.error(data.message);
@@ -76,26 +70,21 @@ export default function AddMedicine() {
                     setformError("Something went wrong! Please try again");
                 }
 
+
             } catch (error) {
                 setloading(false);
                 setformError("Something went wrong! Please try again");
             }
         }
     });
-    const handleImage = (e: any) => {
-        setimage(e.target.files[0]);
-    }
-    const handleRemove = () => {
-        setimage(null);
-    }
 
     const getCategoryList = async () => {
         const { data, error } = await getCategories();
-        if (data) {
+        if (data && data.ok) {
             setCategories(data.data);
         }
         else {
-            console.log(error)
+            setformError("Unable to download categories")
         }
     }
 
@@ -116,11 +105,12 @@ export default function AddMedicine() {
             <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}>
                 <FieldGroup>
                     <Field >
-                        <FieldLabel htmlFor={"image"}>Upload image</FieldLabel>
-                        <UploadImage handleRemove={handleRemove} handleImage={handleImage} image={image} />
-                        {imageError && <CardDescription className="text-red-500">
-                            {imageError}
-                        </CardDescription>}
+                        <div className='flex gap-1 w-full overflow-x-auto auto my-4'>
+                            <div className='relative w-49'>
+                                <img className='w-full rounded-md' src={medicine.imageUrl} alt={'image'} />
+                            </div>
+                        </div>
+                        <CardDescription className="text-red-500">You can't update medicine image</CardDescription>
                     </Field>
                     <form.Field
                         name="name"
@@ -214,9 +204,9 @@ export default function AddMedicine() {
                     <Button onClick={() => router.push("/seller/medicines")} variant={"outline"} className="cursor-pointer">Cancel</Button>
                     {
                         loading ?
-                            <Button type="submit" disabled>Publishing <Spinner data-icon={"inline-start"} /></Button>
+                            <Button type="submit" disabled>Updating <Spinner data-icon={"inline-start"} /></Button>
                             :
-                            <Button className="cursor-pointer">Publish</Button>
+                            <Button className="cursor-pointer">Update</Button>
 
                     }
                 </FieldGroup>

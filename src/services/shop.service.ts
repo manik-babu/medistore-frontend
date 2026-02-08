@@ -70,12 +70,15 @@ const getMedicineById = async (medicineId: string) => {
             }
         }
         else {
-            throw new Error(data.error);
+            return {
+                data: null,
+                error: "Medicine not found! Tye again"
+            }
         }
-    } catch (error) {
+    } catch (error: any) {
         return {
             data: null,
-            error: error
+            error: error.message
         }
     }
 }

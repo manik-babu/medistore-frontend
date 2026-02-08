@@ -37,10 +37,8 @@ export function DropdownMenuBasic({ medicine }: { medicine: { medicineId: string
         setdeleting(true);
         const res = await deleteMedicine(medicine.medicineId);
         if (res.data) {
-            console.log(res.data)
 
             if (res.data.ok) {
-                console.log(res.data.message)
                 toast.success(res.data.message);
             }
             else {
@@ -60,7 +58,7 @@ export function DropdownMenuBasic({ medicine }: { medicine: { medicineId: string
                     <Ellipsis className="cursor-pointer" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => router.push(`/seller/medicines/add?medicineId=${medicine.medicineId}`)}><Edit /> Edit</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push(`/seller/medicines/edit/${medicine.medicineId}`)}><Edit /> Edit</DropdownMenuItem>
                     <DropdownMenuItem onClick={handleDeleteClick} variant={"destructive"}><Trash2 /> Delete</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

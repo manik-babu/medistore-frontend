@@ -157,7 +157,7 @@ export function CartPage({ initialItems = [] }: CartPageProps) {
               <CardTitle>Order Summary</CardTitle>
               {
                 totalStore.size > 1 &&
-                <CardDescription className="text-red-600 text-sm">Each seller’s items are delivered separately and may have separate delivery fees.</CardDescription>
+                <CardDescription className="text-red-600 text-sm">Each seller’s items are ordered and delivered separately, with separate delivery fees.</CardDescription>
               }
             </CardHeader>
             <CardContent className="space-y-4">
