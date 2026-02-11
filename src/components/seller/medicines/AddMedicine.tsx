@@ -4,10 +4,10 @@ import { addMedicine, updateMedicine } from "@/actions/seller.actions";
 import { getCategories, getMedicineById } from "@/actions/shop.actions";
 import { Button } from "@/components/ui/button";
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
 import { Field, FieldError, FieldGroup, FieldLabel, } from "@/components/ui/field";
 import { UploadImage } from "@/components/ui/ImageUploader";
 import { Input } from "@/components/ui/input";
+import MedicineAddedAlert from "@/components/ui/MedicineAddSuccess";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,6 +30,7 @@ export default function AddMedicine() {
     const [formError, setformError] = useState<null | string>(null);
     const [imageError, setimageError] = useState<string | null>(null);
     const [image, setimage] = useState<File | null>(null);
+    const [medicineAdded, setmedicineAdded] = useState(false)
     const form = useForm({
         defaultValues: {
             name: "",
@@ -47,12 +48,8 @@ export default function AddMedicine() {
                     return;
                 }
                 const price = Number(value.price);
-                if (price < 0) {
-                    form.setFieldMeta("price", (prev) => ({
-                        ...prev,
-                        error: "Price must be positive",
-                        isTouched: true
-                    }));
+                if (Number.isNaN(price) || price < 0) {
+                    toast.error("Price must be positive");
                     return;
                 }
                 setloading(true);
@@ -66,7 +63,7 @@ export default function AddMedicine() {
                 setloading(false);
                 if (data && !error) {
                     if (data.ok) {
-                        toast.success(data.message);
+                        setmedicineAdded(true);
                     }
                     else {
                         toast.error(data.message);
@@ -84,6 +81,7 @@ export default function AddMedicine() {
     });
     const handleImage = (e: any) => {
         setimage(e.target.files[0]);
+        setimageError(null);
     }
     const handleRemove = () => {
         setimage(null);
@@ -102,6 +100,11 @@ export default function AddMedicine() {
     useEffect(() => {
         getCategoryList();
     }, [])
+    const handleAddAnother = () => {
+        setmedicineAdded(false);
+        setimage(null);
+        form.reset();
+    }
     return (
         <div className="p-4">
             <CardHeader className="px-0 pb-4">
@@ -222,6 +225,7 @@ export default function AddMedicine() {
                 </FieldGroup>
             </form>
             <ToastContainer position="top-center" />
+            <MedicineAddedAlert success={medicineAdded} handleAddAnother={handleAddAnother} />
         </div>
     );
 }

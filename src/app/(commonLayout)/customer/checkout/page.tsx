@@ -2,6 +2,7 @@ import CheckoutPage from "@/components/checkout/CheckoutPage";
 import { userService } from "@/services/user.service";
 import { CartItem } from "@/types";
 
+export const dynamic = "force-dynamic"
 export type FormatedOrders = Record<string, { totalPrice: number, carts: CartItem[] }>
 export type FormatedDataForOrder = Record<string, string[]>
 export default async function Checkout() {

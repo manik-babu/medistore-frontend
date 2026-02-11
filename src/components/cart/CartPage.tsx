@@ -12,6 +12,8 @@ import { deleteCart, getCarts } from "@/actions/user.action"
 import { Toaster } from "../ui/sonner"
 import { useAppDispatch } from "@/redux/hooks"
 import { decrement } from "@/redux/slice/cartSlice"
+import Link from "next/link"
+import { PageLoader } from "../ui/Loader"
 
 export interface CartItem {
   id: string
@@ -62,11 +64,7 @@ export function CartPage({ initialItems = [] }: CartPageProps) {
 
   if (!cartItems) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-96">
-          <p className="text-muted-foreground">Loading cart...</p>
-        </div>
-      </div>
+      <PageLoader />
     )
   }
 
@@ -77,9 +75,11 @@ export function CartPage({ initialItems = [] }: CartPageProps) {
           <ShoppingCart className="h-16 w-16 text-muted-foreground" />
           <h2 className="text-2xl font-bold">Your cart is empty</h2>
           <p className="text-muted-foreground">Add some medicines to get started</p>
-          <Button onClick={() => router.push("/medicines")}>
-            Browse Medicines
-          </Button>
+          <Link href='/shop'>
+            <Button className="cursor-pointer">
+              Browse Medicines
+            </Button>
+          </Link>
         </div>
       </div>
     )
@@ -102,17 +102,6 @@ export function CartPage({ initialItems = [] }: CartPageProps) {
       toast.error("Error to remove item");
     }
   }
-
-  const handleCheckout = () => {
-    // if (cartItems.length === 0) {
-    //   toast.error("Your cart is empty")
-    //   return
-    // }
-    // router.push("/checkout")
-  }
-
-
-
   // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => {
     return sum + parseFloat(item.medicine.price) * item.quantity

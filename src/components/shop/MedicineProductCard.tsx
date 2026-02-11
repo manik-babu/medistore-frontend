@@ -89,8 +89,8 @@ export function MedicineProductCard({
   }
 
   return (
-    <Card className={`group overflow-hidden transition-all hover:shadow-lg p-4 rounded-2xl ${className}`}>
-      <CardHeader className="p-0 bg-amber-50 flex justify-center items-center rounded-md overflow-hidden border">
+    <Card className={`group overflow-hidden transition-all hover:shadow-lg p-2 rounded-xl ${className}`}>
+      <CardHeader className="p-0 bg-amber-50 flex justify-center items-center rounded-sm overflow-hidden border">
         <div className="relative aspect-square overflow-hidden bg-gray-100 h-full w-full">
           <Image
             src={product.imageUrl.startsWith('http') ? product.imageUrl : `/images/default-medicine-image.jpg`}

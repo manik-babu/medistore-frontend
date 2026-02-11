@@ -1,6 +1,6 @@
 "use server"
 
-import { AddMedicineProps, sellerService } from "@/services/seller.service";
+import { AddMedicineProps, OrderFetch, sellerService } from "@/services/seller.service";
 import { revalidateTag, updateTag } from "next/cache";
 
 export const getMedicines = async (data: { searchText: string; categoryId: string; sortBy: string; page: number | string }) => {
@@ -24,4 +24,10 @@ export type UpdateMedicineProps = {
 
 export const updateMedicine = async (data: UpdateMedicineProps, medicineId: string) => {
     return await sellerService.updateMedicine(data, medicineId);
+}
+export const updateOrder = async (orderId: string, orderStatus: string) => {
+    return await sellerService.updateOrder(orderId, orderStatus);
+}
+export const getOrders = async (data: OrderFetch) => {
+    return await sellerService.getOrders(data);
 }

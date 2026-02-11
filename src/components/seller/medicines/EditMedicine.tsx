@@ -89,7 +89,7 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
 
     useEffect(() => {
         getCategoryList();
-    }, [])
+    }, []);
     return (
         <div className="p-4">
             <CardHeader className="px-0 pb-4">
@@ -106,7 +106,7 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
                     <Field >
                         <div className='flex gap-1 w-full overflow-x-auto auto my-4'>
                             <div className='relative w-49'>
-                                <img className='w-full rounded-md' src={medicine.imageUrl} alt={'image'} />
+                                <img className='w-full rounded-md border' src={medicine.imageUrl} alt={'image'} />
                             </div>
                         </div>
                         <CardDescription className="text-red-500">You can't update medicine image</CardDescription>

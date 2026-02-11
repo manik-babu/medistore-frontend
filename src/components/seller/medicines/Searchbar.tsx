@@ -63,7 +63,6 @@ export function Searchbar({ onSearch, metaData, className }: MedicineSearchBarPr
     const [searchText, setsearchText] = useState<string>("");
     const [selectedCategory, setSelectedCategory] = useState<string>("all")
     const [selectedSort, setSelectedSort] = useState<string>("relevance")
-    const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
     const handleSearch = useCallback(() => {
         onSearch?.({

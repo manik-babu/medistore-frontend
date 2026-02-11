@@ -20,6 +20,7 @@ import { Route } from "@/types/route"
 import { UserRole } from "@/constants/userRole"
 import { adminRoutes } from "@/routes/admin.routes"
 import { sellerRoute } from "@/routes/seller.routes"
+import { Button } from "./ui/button"
 
 export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = await userService.getSession();
@@ -36,15 +37,9 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Documentation</span>
-                  <span className="">v1.0.0</span>
-                </div>
-              </a>
+              <Link href={'/shop'}>
+                <Button className="text-2xl font-bold cursor-pointer" variant={"ghost"}>MediStore</Button>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

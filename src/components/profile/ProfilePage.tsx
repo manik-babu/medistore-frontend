@@ -37,10 +37,11 @@ type UserProfile = {
 
 interface ProfilePageProps {
   user: UserProfile;
-  className?: string
+  className?: string;
+  data: any;
 }
 
-export function ProfilePage({ user, className = "" }: ProfilePageProps) {
+export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
   const dispatch = useAppDispatch();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -63,11 +64,12 @@ export function ProfilePage({ user, className = "" }: ProfilePageProps) {
     }
   }
   const handleLogout = async () => {
-    await signOut();
     dispatch(setUser(null));
+    await signOut();
   }
   React.useEffect(() => {
     dispatch(setCartValue(user._count.carts));
+    dispatch(setUser({ id: data.id, name: data.name, role: data.role, image: data.image }));
   }, []);
 
   return (

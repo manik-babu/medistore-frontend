@@ -1,9 +1,14 @@
 "use client"
 
 import { DropdownMenuBasic } from "@/components/ui/DropDownMenuBasic";
+import { PageLoader } from "@/components/ui/Loader";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function MedicineContainer({ medicines }: { medicines: any }) {
+
+    if (!medicines) {
+        return <PageLoader message="Loading medicines" />
+    }
 
     return (
         <Table>

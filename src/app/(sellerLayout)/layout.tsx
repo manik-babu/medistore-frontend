@@ -17,14 +17,13 @@ export default function RootLayout({
         <div>
             <SidebarProvider>
                 <AppSidebar />
-                <SidebarInset>
-                    <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+                <SidebarInset className="relative">
+                    <header className="flex h-16 shrink-0 items-center gap-2 border-b ">
                         <div className="flex items-center gap-2 px-3">
                             <SidebarTrigger />
                         </div>
                     </header>
                     {children}
-                    <Toaster position="top-center" />
                 </SidebarInset>
             </SidebarProvider>
         </div>

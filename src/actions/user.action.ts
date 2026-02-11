@@ -28,3 +28,6 @@ export const updateCartQuantity = async (cartId: string, quantity: number) => {
 export const placeOrder = async (data: OrderData) => {
     return await userService.placeOrder(data);
 }
+export const cancelOrder = async (orderId: string) => {
+    return await userService.cancelOrder(orderId);
+}

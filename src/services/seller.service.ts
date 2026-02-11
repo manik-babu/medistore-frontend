@@ -128,6 +128,107 @@ const updateMedicine = async (data: UpdateMedicineProps, medicineId: string) => 
         }
     }
 }
+export type OrderFetch = {
+    searchText: string;
+    oldestFirst: boolean;
+    status: string;
+    page: number;
+}
+const getOrders = async ({ searchText, oldestFirst, status, page }: OrderFetch) => {
+    try {
+        const sortBy = oldestFirst ? "asc" : "desc";
+        const url = new URL(`${BACKEND_URL}/api/seller/orders`);
+        url.searchParams.append("searchText", searchText);
+        url.searchParams.append("sortBy", sortBy);
+        url.searchParams.append("status", status);
+        url.searchParams.append("page", page.toString());
+        const cookieStore = await cookies();
+
+        const res = await fetch(url, {
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            cache: 'no-store'
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
+
+const updateOrder = async (orderId: string, orderStatus: string) => {
+    try {
+        const cookieStore = await cookies();
+        const res = await fetch(`${env.BACKEND_URL}/api/seller/orders/${orderId}`, {
+            method: "PATCH",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "Content-type": "application/json"
+            },
+            cache: 'no-store',
+            body: JSON.stringify({ orderStatus })
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
+
+const getSingleOrder = async (orderId: string) => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${BACKEND_URL}/api/seller/orders/${orderId}`, {
+            method: "GET",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+
+        }).then(res => res.json());
+        return {
+            data: res,
+            error: null,
+        };
+    } catch (error: any) {
+        return {
+            data: null,
+            error: error.message
+        }
+    }
+}
+
+const getDashboardData = async () => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${BACKEND_URL}/api/seller/dashboard`, {
+            method: "GET",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+
+        }).then(res => res.json());
+        return {
+            data: res,
+            error: null,
+        };
+    } catch (error: any) {
+        return {
+            data: null,
+            error: error.message
+        }
+    }
+}
 
 
 
@@ -135,5 +236,10 @@ export const sellerService = {
     getMedicines,
     addMedicine,
     deleteMedicine,
-    updateMedicine
+    updateMedicine,
+    getOrders,
+    updateOrder,
+    getSingleOrder,
+    getDashboardData,
+
 }

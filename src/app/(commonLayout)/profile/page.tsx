@@ -19,7 +19,7 @@ export default async function Profile() {
     }
     return (
         <div className="mt-20">
-            <ProfilePage user={userDetails} />
+            <ProfilePage user={userDetails} data={data} />
         </div>
     );
 }

@@ -20,7 +20,7 @@ export const UploadImage = ({ handleImage, handleRemove, image }: UploadImagePro
                 image && imageUrl &&
                 <div className='flex gap-1 w-full overflow-x-auto auto my-4'>
                     <div className='relative w-49'>
-                        <img className='w-full rounded-md' src={imageUrl} alt={'image'} />
+                        <img className='w-full rounded-md border' src={imageUrl} alt={'image'} />
                     </div>
                 </div>
             }

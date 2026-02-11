@@ -2,12 +2,13 @@ import { env } from "@/env";
 import { OrderData } from "@/types";
 import { cookies } from "next/headers"
 
+const BACKEND_URL = env.BACKEND_URL;
 
 const getSession = async () => {
     try {
         const cookieStore = await cookies();
 
-        const session = await fetch(`${env.BACKEND_URL}/api/auth/get-session`, {
+        const session = await fetch(`${BACKEND_URL}/api/auth/get-session`, {
             headers: {
                 Cookie: cookieStore.toString()
             }
@@ -28,7 +29,7 @@ const getUserDetails = async () => {
     try {
         const cookieStore = await cookies();
 
-        const result = await fetch(`${env.BACKEND_URL}/api/user/profile`, {
+        const result = await fetch(`${BACKEND_URL}/api/user/profile`, {
             headers: {
                 Cookie: cookieStore.toString()
             },
@@ -48,7 +49,7 @@ const addToCart = async (medicineId: string, quantity: number) => {
     try {
         const cookieStore = await cookies();
 
-        const response = await fetch(`${env.BACKEND_URL}/api/carts`, {
+        const response = await fetch(`${BACKEND_URL}/api/carts`, {
             method: "POST",
             headers: {
                 Cookie: cookieStore.toString(),
@@ -72,7 +73,7 @@ const getCarts = async () => {
     try {
         const cookieStore = await cookies();
 
-        const res = await fetch(`${env.BACKEND_URL}/api/carts`, {
+        const res = await fetch(`${BACKEND_URL}/api/carts`, {
             headers: {
                 Cookie: cookieStore.toString()
             },
@@ -93,7 +94,7 @@ const deleteCart = async (cartId: string) => {
     try {
         const cookieStore = await cookies();
 
-        const res = await fetch(`${env.BACKEND_URL}/api/carts/${cartId}`, {
+        const res = await fetch(`${BACKEND_URL}/api/carts/${cartId}`, {
             method: "DELETE",
             headers: {
                 Cookie: cookieStore.toString()
@@ -113,7 +114,7 @@ const deleteCart = async (cartId: string) => {
 const updateCartQuantity = async (cartId: string, quantity: number) => {
     try {
         const cookieStore = await cookies();
-        const res = await fetch(`${env.BACKEND_URL}/api/carts/${cartId}`, {
+        const res = await fetch(`${BACKEND_URL}/api/carts/${cartId}`, {
             method: "PATCH",
             headers: {
                 Cookie: cookieStore.toString(),
@@ -136,7 +137,7 @@ const updateCartQuantity = async (cartId: string, quantity: number) => {
 const placeOrder = async (data: OrderData) => {
     try {
         const cookieStore = await cookies();
-        const res = await fetch(`${env.BACKEND_URL}/api/orders`, {
+        const res = await fetch(`${BACKEND_URL}/api/orders`, {
             method: "POST",
             headers: {
                 Cookie: cookieStore.toString(),
@@ -156,6 +157,71 @@ const placeOrder = async (data: OrderData) => {
     }
 }
 
+const getOrders = async () => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${BACKEND_URL}/api/orders`, {
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            cache: 'no-store'
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
+
+const cancelOrder = async (orderId: string) => {
+    try {
+        const cookieStore = await cookies();
+        const res = await fetch(`${BACKEND_URL}/api/orders/${orderId}`, {
+            method: "PATCH",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            cache: 'no-store'
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Somthing went wrong"
+        }
+    }
+}
+
+const getSingleOrder = async (orderId: string) => {
+    try {
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${BACKEND_URL}/api/orders/${orderId}`, {
+            method: "GET",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+
+        }).then(res => res.json());
+        return {
+            data: res,
+            error: null,
+        };
+    } catch (error: any) {
+        return {
+            data: null,
+            error: error.message
+        }
+    }
+}
+
 
 export const userService = {
     getSession,
@@ -165,4 +231,7 @@ export const userService = {
     deleteCart,
     updateCartQuantity,
     placeOrder,
+    getOrders,
+    cancelOrder,
+    getSingleOrder,
 }
