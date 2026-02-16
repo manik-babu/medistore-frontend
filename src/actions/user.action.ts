@@ -31,3 +31,6 @@ export const placeOrder = async (data: OrderData) => {
 export const cancelOrder = async (orderId: string) => {
     return await userService.cancelOrder(orderId);
 }
+export const emailVerify = async (token: string) => {
+    return await userService.verifyEmail(token);
+}

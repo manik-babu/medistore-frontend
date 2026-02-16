@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ModeToggle } from "../ui/modeToggle";
 import NavAuthProfile from "../ui/NavAuthProfile";
 import { Button } from "../ui/button";
+import MobileNav from "./MobileNav";
 
 export default async function Navbar() {
     return (
@@ -10,17 +11,22 @@ export default async function Navbar() {
                 <h1 className="font-bold text-3xl">MediStore</h1>
             </div>
             <nav className=" flex justify-center items-center gap-2">
-                <Link href="/">
-                    <Button variant={"ghost"} className="cursor-pointer">
-                        Home
-                    </Button>
-                </Link>
-                <Link href="/shop">
-                    <Button variant={"ghost"} className="cursor-pointer">
-                        shop
-                    </Button>
-                </Link>
+                <div className="sm:block hidden">
+                    <Link href="/">
+                        <Button variant={"ghost"} className="cursor-pointer">
+                            Home
+                        </Button>
+                    </Link>
+                    <Link href="/shop">
+                        <Button variant={"ghost"} className="cursor-pointer">
+                            shop
+                        </Button>
+                    </Link>
+                </div>
                 <NavAuthProfile />
+                <div className="flex sm:hidden h-full justify-center items-center">
+                    <MobileNav />
+                </div>
             </nav>
         </div>
     );

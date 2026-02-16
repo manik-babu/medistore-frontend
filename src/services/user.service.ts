@@ -222,6 +222,21 @@ const getSingleOrder = async (orderId: string) => {
     }
 }
 
+const verifyEmail = async (token: string) => {
+    try {
+        const res = fetch(`${BACKEND_URL}/api/auth/verify-email?token=${token}`).then(res => res.json());
+        return {
+            data: res,
+            error: null
+        }
+    } catch (error: any) {
+        return {
+            data: null,
+            error: error.message
+        }
+    }
+}
+
 
 export const userService = {
     getSession,
@@ -234,4 +249,5 @@ export const userService = {
     getOrders,
     cancelOrder,
     getSingleOrder,
+    verifyEmail,
 }
