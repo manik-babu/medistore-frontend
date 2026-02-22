@@ -1,3 +1,4 @@
+import AppFooter from "@/components/layouts/AppFooter";
 import Navbar from "@/components/layouts/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";
@@ -16,7 +17,10 @@ export default function RootLayout({
 
         <div>
             <Navbar />
-            {children}
+            <div className="mt-16">
+                {children}
+            </div>
+            <AppFooter />
         </div>
     );
 }

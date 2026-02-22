@@ -34,3 +34,6 @@ export const cancelOrder = async (orderId: string) => {
 export const emailVerify = async (token: string) => {
     return await userService.verifyEmail(token);
 }
+export const changeRole = async (storeName: string) => {
+    return await userService.changeRole(storeName);
+}

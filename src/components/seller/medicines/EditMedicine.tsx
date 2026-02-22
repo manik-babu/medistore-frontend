@@ -3,7 +3,7 @@
 import { addMedicine, updateMedicine } from "@/actions/seller.actions";
 import { getCategories, getMedicineById } from "@/actions/shop.actions";
 import { Button } from "@/components/ui/button";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel, } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -91,7 +91,7 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
         getCategoryList();
     }, []);
     return (
-        <div className="p-4">
+        <Card className="p-4 md:w-[90%] md:mx-auto mt-4 mx-4">
             <CardHeader className="px-0 pb-4">
                 <CardTitle>List a product for sale</CardTitle>
                 <CardDescription>
@@ -211,6 +211,6 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
                 </FieldGroup>
             </form>
             <ToastContainer position="top-center" />
-        </div>
+        </Card>
     );
 }

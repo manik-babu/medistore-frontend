@@ -18,7 +18,7 @@ export default async function Profile() {
         redirect("/login");
     }
     return (
-        <div className="mt-20">
+        <div>
             <ProfilePage user={userDetails} data={data} />
         </div>
     );

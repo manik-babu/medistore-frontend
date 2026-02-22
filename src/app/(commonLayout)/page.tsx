@@ -1,9 +1,6 @@
-import HomeLandingPage from "@/components/home/Landing";
+// app/page.tsx
+import { MediStoreLanding } from "@/components/home/MediStoreLanding"
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <HomeLandingPage />
-    </div>
-  );
+export default function HomePage() {
+  return <MediStoreLanding />
 }

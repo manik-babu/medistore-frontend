@@ -236,6 +236,30 @@ const verifyEmail = async (token: string) => {
         }
     }
 }
+const changeRole = async (storeName: string) => {
+    try {
+        const cookieStore = await cookies();
+        const res = await fetch(`${BACKEND_URL}/api/user/change-role`, {
+            method: "PATCH",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "content-type": "application/json"
+            },
+            cache: 'no-store',
+            body: JSON.stringify({
+                storeName
+            })
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Role update failed"
+        }
+    }
+}
 
 
 export const userService = {
@@ -250,4 +274,5 @@ export const userService = {
     cancelOrder,
     getSingleOrder,
     verifyEmail,
+    changeRole,
 }

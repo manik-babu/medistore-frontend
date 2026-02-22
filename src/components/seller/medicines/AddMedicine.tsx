@@ -3,7 +3,7 @@
 import { addMedicine, updateMedicine } from "@/actions/seller.actions";
 import { getCategories, getMedicineById } from "@/actions/shop.actions";
 import { Button } from "@/components/ui/button";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel, } from "@/components/ui/field";
 import { UploadImage } from "@/components/ui/ImageUploader";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "@tanstack/react-form";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -106,7 +107,7 @@ export default function AddMedicine() {
         form.reset();
     }
     return (
-        <div className="p-4">
+        <Card className="p-4 md:w-[90%] md:mx-auto mt-4 mx-4">
             <CardHeader className="px-0 pb-4">
                 <CardTitle>List a product for sale</CardTitle>
                 <CardDescription>
@@ -214,7 +215,9 @@ export default function AddMedicine() {
 
                 </FieldGroup>
                 <FieldGroup className="flex flex-row justify-between items-center mt-4">
-                    <Button onClick={() => router.push("/seller/medicines")} variant={"outline"} className="cursor-pointer">Cancel</Button>
+                    <Link href={'/seller/medicines'}>
+                        <Button variant={"outline"} className="cursor-pointer">Cancel</Button>
+                    </Link>
                     {
                         loading ?
                             <Button type="submit" disabled>Publishing <Spinner data-icon={"inline-start"} /></Button>
@@ -226,6 +229,6 @@ export default function AddMedicine() {
             </form>
             <ToastContainer position="top-center" />
             <MedicineAddedAlert success={medicineAdded} handleAddAnother={handleAddAnother} />
-        </div>
+        </Card>
     );
 }

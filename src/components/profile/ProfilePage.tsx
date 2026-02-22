@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { User, Mail, Phone, Calendar, Store, Shield, Info, Edit, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +16,11 @@ import { signOut } from "@/lib/auth-client"
 import { useAppDispatch } from "@/redux/hooks"
 import { setUser } from "@/redux/slice/userSlice"
 import { setCartValue } from "@/redux/slice/cartSlice"
+import { useEffect, useState } from "react"
+import { toast, Toaster } from "sonner"
+import { Spinner } from "../ui/spinner"
+import RoleSwitchCard from "../ui/RoleSwitchCard"
+import { UserRole } from "@/constants/userRole"
 
 type UserProfile = {
   id: string
@@ -42,6 +46,7 @@ interface ProfilePageProps {
 }
 
 export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
+  const [logginOut, setlogginOut] = useState(false)
   const dispatch = useAppDispatch();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -49,6 +54,13 @@ export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
       month: "long",
       day: "numeric",
     })
+  }
+  function canSwitchRole(createdAt: string) {
+    const created = new Date(createdAt).getTime()
+    const now = Date.now()
+    const twoDays = 2 * 24 * 60 * 60 * 1000
+
+    return (now - created) <= twoDays
   }
 
   const getRoleBadgeColor = (role: string) => {
@@ -64,22 +76,37 @@ export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
     }
   }
   const handleLogout = async () => {
-    dispatch(setUser(null));
-    await signOut();
+    setlogginOut(true);
+    try {
+      await signOut();
+      dispatch(setUser(null));
+    } catch (error) {
+      toast.error("Logout faild!");
+    }
+    finally {
+      setlogginOut(false);
+    }
   }
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(setCartValue(user._count.carts));
     dispatch(setUser({ id: data.id, name: data.name, role: data.role, image: data.image }));
   }, []);
 
   return (
     <div className={`container mx-auto px-4 py-8 max-w-4xl ${className}`}>
+
       {/* Header Card */}
       <CardHeader className="flex justify-end mb-4">
-        <Button onClick={handleLogout} className="w-fit bg-red-500 hover:bg-red-600 cursor-pointer">
-          <LogOut className="h-4 w-4 mr-2" />
-          Logout
-        </Button>
+        {
+          logginOut ? <Button disabled className="w-fit bg-red-500 hover:bg-red-600 cursor-pointer">
+            Logging out <Spinner />
+          </Button>
+            :
+            <Button onClick={handleLogout} className="w-fit bg-red-500 hover:bg-red-600 cursor-pointer">
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
+        }
       </CardHeader>
       <Card className="mb-6">
         <CardHeader className="pb-4">
@@ -121,9 +148,13 @@ export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
           </div>
         </CardHeader>
       </Card>
+      {
+        canSwitchRole(user.createdAt) && user.role === UserRole.CUSTOMER &&
+        <RoleSwitchCard />
+      }
 
       {/* Details Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         {/* Personal Information */}
         <Card>
           <CardHeader>
@@ -267,6 +298,7 @@ export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
           </CardContent>
         </Card>
       </div>
+      <Toaster position="top-center" />
     </div>
   )
 }

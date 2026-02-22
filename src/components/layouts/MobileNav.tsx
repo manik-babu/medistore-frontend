@@ -9,7 +9,7 @@ export default function MobileNav({ className }: { className?: string }) {
     const path = usePathname();
     return (
         <Sheet>
-            <SheetTrigger>
+            <SheetTrigger className="w-6 h-6 text-sm font-medium">
                 <Menu />
             </SheetTrigger>
             <SheetContent>

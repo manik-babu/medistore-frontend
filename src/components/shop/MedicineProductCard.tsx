@@ -134,7 +134,7 @@ export function MedicineProductCard({
               Details
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[95vh] scroll">
+          <SheetContent side="bottom" className="h-[95dvh] scroll">
             <SheetTitle className="pl-14 p-2">
               <SheetClose asChild>
                 <Button variant="outline" className="rounded-full cursor-pointer"> <ArrowLeft /> Back to product page</Button>
