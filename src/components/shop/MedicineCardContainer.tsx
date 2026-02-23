@@ -4,7 +4,7 @@ export default function MedicineCardContainer({ medicines }: { medicines: any })
     return (
         <div className="mt-4" id="medicine-card-container">
             {medicines &&
-                medicines.data.map((medicine: any) => (
+                medicines.map((medicine: any) => (
                     <MedicineProductCard key={medicine.id} product={medicine} />
                 ))
             }

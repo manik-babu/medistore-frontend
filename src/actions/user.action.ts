@@ -1,7 +1,7 @@
 "use server"
 
 import { userService } from "@/services/user.service"
-import { OrderData } from "@/types";
+import { OrderData, ProfileData } from "@/types";
 
 export const getSession = async () => {
     return await userService.getSession();
@@ -36,4 +36,7 @@ export const emailVerify = async (token: string) => {
 }
 export const changeRole = async (storeName: string) => {
     return await userService.changeRole(storeName);
+}
+export const updateProfile = async (data: ProfileData) => {
+    return await userService.updateProfile(data);
 }

@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { OrderData } from "@/types";
+import { OrderData, ProfileData } from "@/types";
 import { cookies } from "next/headers"
 
 const BACKEND_URL = env.BACKEND_URL;
@@ -260,6 +260,28 @@ const changeRole = async (storeName: string) => {
         }
     }
 }
+const updateProfile = async (data: ProfileData) => {
+    try {
+        const cookieStore = await cookies();
+        const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+            method: "PATCH",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "content-type": "application/json"
+            },
+            cache: 'no-store',
+            body: JSON.stringify(data)
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error) {
+        return {
+            data: null,
+            error: "Profile update failed"
+        }
+    }
+}
 
 
 export const userService = {
@@ -275,4 +297,5 @@ export const userService = {
     getSingleOrder,
     verifyEmail,
     changeRole,
+    updateProfile,
 }

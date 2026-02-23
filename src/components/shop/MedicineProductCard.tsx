@@ -21,6 +21,7 @@ import { UserRole } from "@/constants/userRole"
 import { increment } from "@/redux/slice/cartSlice"
 import { useState } from "react"
 import { Spinner } from "../ui/spinner"
+import Link from "next/link"
 
 interface Product {
   id: string

@@ -17,10 +17,12 @@ import { useAppDispatch } from "@/redux/hooks"
 import { setUser } from "@/redux/slice/userSlice"
 import { setCartValue } from "@/redux/slice/cartSlice"
 import { useEffect, useState } from "react"
-import { toast, Toaster } from "sonner"
+import { toast } from "sonner"
 import { Spinner } from "../ui/spinner"
 import RoleSwitchCard from "../ui/RoleSwitchCard"
 import { UserRole } from "@/constants/userRole"
+import Link from "next/link"
+import { Toaster } from "../ui/sonner"
 
 type UserProfile = {
   id: string
@@ -28,7 +30,7 @@ type UserProfile = {
   email: string
   role: string
   age?: number
-  contatact?: string
+  contact?: string
   bio?: string
   isBanned: boolean
   createdAt: string
@@ -141,10 +143,12 @@ export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
             </div>
 
             {/* Edit Button */}
-            <Button className="self-start sm:self-center">
-              <Edit className="h-4 w-4 mr-2" />
-              Edit Profile
-            </Button>
+            <Link href={"/profile/edit"}>
+              <Button className="self-start sm:self-center">
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Profile
+              </Button>
+            </Link>
           </div>
         </CardHeader>
       </Card>
@@ -213,12 +217,12 @@ export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
               <p className="text-base break-all">{user.email}</p>
             </div>
 
-            {user.contatact && (
+            {user.contact && (
               <>
                 <Separator />
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-muted-foreground">Phone Number</p>
-                  <p className="text-base">{user.contatact}</p>
+                  <p className="text-base">{user.contact}</p>
                 </div>
               </>
             )}

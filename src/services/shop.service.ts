@@ -27,30 +27,26 @@ const getCategories = async () => {
         }
     }
 }
-const getMedicines = async ({ searchText, categoryId, sortBy }: { searchText: string; categoryId: string; sortBy: string }) => {
+const getMedicines = async ({ searchText, categoryId, sortBy, page }: { searchText: string; categoryId: string; sortBy: string, page: number }) => {
     try {
         const url = new URL(`${BACKEND_URL}/api/medicines`);
         url.searchParams.append("searchText", searchText);
         url.searchParams.append("categoryId", categoryId);
         url.searchParams.append("sortBy", sortBy);
+        url.searchParams.append("page", page.toString());
 
         const data = await fetch(url.toString(), {
             cache: "no-store"
         }).then(res => res.json());
 
-        if (data.ok) {
-            return {
-                data,
-                error: null
-            }
+        return {
+            data,
+            error: null
         }
-        else {
-            throw new Error(data.error);
-        }
-    } catch (error) {
+    } catch (error: any) {
         return {
             data: null,
-            error: error
+            error: error.message
         }
     }
 }

@@ -68,7 +68,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         if (value.role === UserRole.CUSTOMER) {
           value.storeName = null;
         }
-        console.log({ value })
         setloading(true);
         const { data, error } = await authClient.signUp.email(value);
         setloading(false);
