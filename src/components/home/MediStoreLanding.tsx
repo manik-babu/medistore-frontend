@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import SearchBar from "./SearchBar"
 
 export function MediStoreLanding() {
     const features = [
@@ -54,14 +55,7 @@ export function MediStoreLanding() {
                         </div>
 
                         {/* Search Bar */}
-                        <div className="max-w-2xl mx-auto relative">
-                            <Input
-                                type="text"
-                                placeholder="Search for medicines, health products..."
-                                className="h-14 pl-6 pr-32 text-lg"
-                            />
-                            <Button className="absolute right-2 top-2">Search</Button>
-                        </div>
+                        <SearchBar />
                     </div>
                 </div>
             </section>
@@ -105,7 +99,7 @@ export function MediStoreLanding() {
                         <Link href="/signup">
                             <Button size="lg" variant="secondary" className="cursor-pointer">Create Account</Button>
                         </Link>
-                        <Link href="/medicines">
+                        <Link href="/shop">
                             <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground dark:hover:bg-card">
                                 Start Shopping
                             </Button>

@@ -71,7 +71,6 @@ export function ShopPage() {
   }
 
   const handleSearch = async () => {
-    console.log("Searched")
     setSearching(true);
     try {
       const { data, error } = await getMedicines({
@@ -88,7 +87,6 @@ export function ShopPage() {
         toast.error(data.message);
       }
       else {
-        console.log({ medicines: data.data })
         dispatch(setShopData(data.data))
       }
     } catch (error: any) {
@@ -122,7 +120,6 @@ export function ShopPage() {
           data: [...medicines.data, ...data.data.data],
           meta: data.data.meta
         }));
-        console.log({ meta: medicines.meta })
       }
     } catch (error: any) {
       toast.error(error.message)
@@ -135,7 +132,7 @@ export function ShopPage() {
   // Trigger search when Enter is pressed
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSearch()
+      setSearchParams("search", searchText)
     }
   }
 
@@ -146,7 +143,7 @@ export function ShopPage() {
       if (medicines.data.length === 0) {
         handleSearch();
       }
-      if (categories.length === 1) {
+      if (categories.length <= 1) {
         getCategoryList();
       }
     }
@@ -163,10 +160,6 @@ export function ShopPage() {
       toast.error(error);
     }
   }
-
-  useEffect(() => {
-
-  }, [])
   return (
     <>
       <Card className={`w-full space-y-4 mt-4 sm:px-4 px-2 py-4 gap-1`}>

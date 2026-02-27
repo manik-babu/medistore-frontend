@@ -1,4 +1,3 @@
-// app/page.tsx
 import { MediStoreLanding } from "@/components/home/MediStoreLanding"
 
 export default function HomePage() {

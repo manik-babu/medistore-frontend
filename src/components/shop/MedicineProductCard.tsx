@@ -22,6 +22,7 @@ import { increment } from "@/redux/slice/cartSlice"
 import { useState } from "react"
 import { Spinner } from "../ui/spinner"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface Product {
   id: string
@@ -56,6 +57,7 @@ export function MedicineProductCard({
   product,
   className = "",
 }: MedicineProductCardProps) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
 
@@ -125,27 +127,14 @@ export function MedicineProductCard({
       </CardContent>
 
       <div className="gap-2 flex justify-between">
-        <Sheet>
-          <SheetTrigger className="flex-1" asChild>
-            <Button
-              variant="outline"
-              className="w-full cursor-pointer"
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              Details
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="h-[95dvh]">
-            <SheetTitle className="pl-14 p-2">
-              <SheetClose asChild>
-                <Button variant="outline" className="rounded-full cursor-pointer"> <ArrowLeft /> Back to product page</Button>
-              </SheetClose>
-            </SheetTitle>
-            <div className="overflow-auto">
-              <MedicineDetailsPage medicineId={product.id} handleAddToCart={handleAddToCart} isAddingToCart={isAddingToCart} />
-            </div>
-          </SheetContent>
-        </Sheet>
+        <Button
+          onClick={() => router.push(`/shop/medicine/${product.id}`)}
+          variant="outline"
+          className="cursor-pointer flex-1"
+        >
+          <Eye className="h-4 w-4 mr-2" />
+          Details
+        </Button>
         {
           isAddingToCart ?
             <Button

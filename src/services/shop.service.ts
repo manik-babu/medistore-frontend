@@ -51,17 +51,9 @@ const getMedicineById = async (medicineId: string) => {
             cache: "no-store"
         }).then(res => res.json());
 
-        if (data) {
-            return {
-                data,
-                error: null
-            }
-        }
-        else {
-            return {
-                data: null,
-                error: "Medicine not found! Tye again"
-            }
+        return {
+            data,
+            error: null
         }
     } catch (error: any) {
         return {

@@ -1,7 +1,7 @@
 "use client"
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { Minus, Plus, ShoppingCart, Star, Package, Store, Calendar, Heart } from "lucide-react"
+import { Minus, Plus, ShoppingCart, Star, Package, Store, Calendar, Heart, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,23 +21,27 @@ import { PageLoader } from "../ui/Loader"
 import { RatingsOverview } from "../reviews/RatingsOverview"
 import { MedicineData } from "@/types/medicine"
 import { ReviewsList } from "../reviews/ReviewList"
+import { addToCart, getSession } from "@/actions/user.action"
+import { UserRole } from "@/constants/userRole"
+import { increment } from "@/redux/slice/cartSlice"
+import { useAppDispatch } from "@/redux/hooks"
+import { useRouter } from "next/navigation"
 
 
 
 interface MedicineDetailsPageProps {
-  medicineId: string;
-  handleAddToCart: (medicineId: string, quantity: number) => Promise<void>
+  data: MedicineData;
   className?: string;
-  isAddingToCart: boolean;
 }
 
 export function MedicineDetailsPage({
-  medicineId,
-  handleAddToCart,
+  data,
   className = "",
-  isAddingToCart,
 }: MedicineDetailsPageProps) {
-  const [data, setData] = useState<MedicineData | null>(null)
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [quantity, setQuantity] = useState(1)
 
   const formatPrice = (price: string) => {
@@ -59,33 +63,39 @@ export function MedicineDetailsPage({
       setQuantity((prev) => prev - 1)
     }
   }
-
-
-
-  const getMedicineDetails = async () => {
-    const { data: res, error } = await getMedicineById(medicineId);
-    if (error) {
-      toast.error("Unable to load medicine details")
-      return;
+  const handleAddToCart = async () => {
+    try {
+      setIsAddingToCart(true)
+      const { data, error } = await getSession();
+      if (!data) {
+        toast.error("Login required");
+        return;
+      }
+      if (data && data.role !== UserRole.CUSTOMER) {
+        toast.error("Only customer can buy")
+        return;
+      }
+      const res = await addToCart(data.id, quantity);
+      if (res.data.ok) {
+        toast.success("Added to the cart")
+        dispatch(increment());
+      }
+      else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error)
+      toast.error("Something went wrong")
+    } finally {
+      setIsAddingToCart(false)
     }
-    if (res.ok) {
-      setData(res.data);
-    }
-    else {
-      toast.error(res.data.message);
-    }
-
-  }
-
-  useEffect(() => {
-    getMedicineDetails();
-  }, []);
-  if (!data) {
-    return <PageLoader message="Loading details" />
   }
 
   return (
-    <div className={`container mx-auto px-4 py-8 max-w-7xl ${className}`}>
+    <div className={`container mx-auto px-4 max-w-7xl ${className}`}>
+      <div className="py-6">
+        <Button onClick={() => router.back()} variant="outline" className="rounded-full cursor-pointer"> <ArrowLeft /> Back to product page</Button>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Image */}
         <div className="space-y-4">
@@ -209,7 +219,7 @@ export function MedicineDetailsPage({
                     <Button
                       className="flex-1 cursor-pointer"
                       size="lg"
-                      onClick={() => handleAddToCart(medicineId, quantity)}
+                      onClick={handleAddToCart}
                     >
                       <ShoppingCart className="h-5 w-5 mr-2" />
                       Add to Cart
