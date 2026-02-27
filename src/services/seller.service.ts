@@ -179,7 +179,7 @@ const updateOrder = async (orderId: string, orderStatus: string) => {
     } catch (error) {
         return {
             data: null,
-            error: "Somthing went wrong"
+            error: "something went wrong"
         }
     }
 }
@@ -230,6 +230,28 @@ const getDashboardData = async () => {
     }
 }
 
+const reviewResponse = async (content: string, reviewId: string) => {
+    try {
+        const cookieStore = await cookies();
+        const res = await fetch(`${env.BACKEND_URL}/api/reviews/reply/${reviewId}`, {
+            method: "PATCH",
+            headers: {
+                Cookie: cookieStore.toString(),
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({ data: content })
+        }).then(res => res.json());
+
+        return { data: res, error: null };
+
+    } catch (error: any) {
+        return {
+            data: null,
+            error: error.message
+        }
+    }
+}
+
 
 
 export const sellerService = {
@@ -241,5 +263,6 @@ export const sellerService = {
     updateOrder,
     getSingleOrder,
     getDashboardData,
+    reviewResponse,
 
 }

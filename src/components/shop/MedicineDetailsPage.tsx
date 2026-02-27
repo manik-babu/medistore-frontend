@@ -17,42 +17,12 @@ import { toast } from "sonner"
 import { getMedicineById } from "@/actions/shop.actions"
 import { Toaster } from "../ui/sonner"
 import { Spinner } from "../ui/spinner"
+import { PageLoader } from "../ui/Loader"
+import { RatingsOverview } from "../reviews/RatingsOverview"
+import { MedicineData } from "@/types/medicine"
+import { ReviewsList } from "../reviews/ReviewList"
 
-interface MedicineData {
-  medicine: {
-    id: string
-    imageUrl: string
-    imageCloudinaryId: string
-    price: string
-    isBanned: boolean
-    isFeatured: boolean
-    authorId: string
-    name: string
-    description: string
-    categoryId: string
-    createdAt: string
-    updatedAt: string
-    category: {
-      id: string
-      name: string
-    }
-    _count: {
-      carts: number
-    }
-    author: {
-      id: string
-      storeName: string
-      image: string | null
-    }
-  }
-  ratingAvgAndCount: {
-    _avg: {
-      rating: number | null
-    }
-    _count: number
-  }
-  ratingCount: any[]
-}
+
 
 interface MedicineDetailsPageProps {
   medicineId: string;
@@ -111,7 +81,7 @@ export function MedicineDetailsPage({
     getMedicineDetails();
   }, []);
   if (!data) {
-    return <h1>Loading...</h1>
+    return <PageLoader message="Loading details" />
   }
 
   return (
@@ -178,8 +148,8 @@ export function MedicineDetailsPage({
             {/* Rating */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">
-                {data.ratingAvgAndCount._avg.rating ? data.ratingAvgAndCount._avg.rating.toFixed(1) : "No ratings"} (
-                {data.ratingAvgAndCount._count} {data.ratingAvgAndCount._count === 1 ? "review" : "reviews"})
+                {data.ratings.total._avg.rating ? data.ratings.total._avg.rating.toFixed(1) : "No ratings"} (
+                {data.ratings.total._count} {data.ratings.total._count === 1 ? "review" : "reviews"})
               </span>
             </div>
           </div>
@@ -299,6 +269,8 @@ export function MedicineDetailsPage({
           </div>
         </Card>
       </div>
+      <RatingsOverview data={data.ratings} />
+      <ReviewsList medicineId={data.medicine.id} />
     </div>
   )
 }

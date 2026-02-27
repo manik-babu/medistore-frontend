@@ -60,7 +60,7 @@ export function Searchbar({ onSearch, metaData, className }: MedicineSearchBarPr
     const [categories, setCategories] = useState<Categories[]>([{ id: "all", name: "All Categories" }]);
 
     const [page, setPage] = useState<number | string>(1);
-    const [searchText, setsearchText] = useState<string>("");
+    const [searchText, setSearchText] = useState<string>("");
     const [selectedCategory, setSelectedCategory] = useState<string>("all")
     const [selectedSort, setSelectedSort] = useState<string>("relevance")
 
@@ -86,7 +86,7 @@ export function Searchbar({ onSearch, metaData, className }: MedicineSearchBarPr
     }, [selectedCategory, selectedSort, page]);
 
     const clearSearch = () => {
-        setsearchText("")
+        setSearchText("")
         setSelectedCategory("all")
         setSelectedSort("relevance")
     }
@@ -116,13 +116,13 @@ export function Searchbar({ onSearch, metaData, className }: MedicineSearchBarPr
                         type="text"
                         placeholder="Search for medicines, health products..."
                         value={searchText}
-                        onChange={(e) => setsearchText(e.target.value)}
+                        onChange={(e) => setSearchText(e.target.value)}
                         onKeyDown={handleKeyDown}
                         className="pl-10 pr-10 h-11"
                     />
                     {searchText && (
                         <button
-                            onClick={() => setsearchText("")}
+                            onClick={() => setSearchText("")}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                         >
                             <X className="h-4 w-4" />
@@ -174,7 +174,7 @@ export function Searchbar({ onSearch, metaData, className }: MedicineSearchBarPr
                         <Badge variant="secondary" className="gap-1">
                             Query: {searchText}
                             <button
-                                onClick={() => setsearchText("")}
+                                onClick={() => setSearchText("")}
                                 className="ml-1 hover:text-destructive"
                             >
                                 <X className="h-3 w-3" />

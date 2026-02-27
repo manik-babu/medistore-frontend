@@ -31,3 +31,7 @@ export const updateOrder = async (orderId: string, orderStatus: string) => {
 export const getOrders = async (data: OrderFetch) => {
     return await sellerService.getOrders(data);
 }
+
+export const reviewResponse = async (content: string, reviewId: string) => {
+    return await sellerService.reviewResponse(content, reviewId)
+}

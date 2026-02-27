@@ -6,14 +6,14 @@ import { Searchbar } from "./Searchbar";
 import MedicineContainer from "./MedicineContainer";
 
 export default function MainMedicine() {
-    const [medicines, setmedicines] = useState<any>();
+    const [medicines, setMedicines] = useState<any>();
     const handleSearch = async (value: any) => {
         const { data, error } = await getMedicines(value);
         if (error) {
             console.log(error)
             throw new Error("Something went wrong");
         }
-        setmedicines(data.data);
+        setMedicines(data.data);
     }
     return (
         <div className="px-4">
