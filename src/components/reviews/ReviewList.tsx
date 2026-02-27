@@ -17,10 +17,13 @@ import { UserRole } from "@/constants/userRole"
 
 export function ReviewsList({ medicineId }: { medicineId: string }) {
     const [reviewData, setReviewData] = useState<ReviewData | null>(null);
-    const [oldestFirst, setOldestFirst] = useState(false)
+    const [oldestFirst, setOldestFirst] = useState(false);
+    const [rating, setRating] = useState<string>('-1');
     const session = useAppSelector((state) => state.user);
+    const [fetchingReview, setFetchingReview] = useState(false);
 
     const fetchReview = async (oldestFirst: boolean, rating: string) => {
+        setFetchingReview(true);
         try {
             const res = await getReviews(medicineId, oldestFirst, rating);
             if (!res.data) {
@@ -38,12 +41,12 @@ export function ReviewsList({ medicineId }: { medicineId: string }) {
             toast.error(error.message || "Unable to load reviews");
         }
         finally {
-
+            setFetchingReview(false);
         }
     }
     useEffect(() => {
-        fetchReview(oldestFirst, "-1");
-    }, []);
+        fetchReview(oldestFirst, rating);
+    }, [oldestFirst, rating]);
 
     if (reviewData === null) {
         return <PageLoader message="Loading review" />
@@ -63,7 +66,7 @@ export function ReviewsList({ medicineId }: { medicineId: string }) {
                         </FieldContent>
                     </Field>
                 </FieldLabel>
-                <RadioGroup defaultValue="all" onValueChange={(value) => fetchReview(oldestFirst, value)} className="flex flex-wrap">
+                <RadioGroup defaultValue="-1" onValueChange={(value) => setRating(value)} className="flex flex-wrap">
                     {
                         [-1, 1, 2, 3, 4, 5].map((star) => (
                             <FieldLabel key={star.toString()} htmlFor={star.toString()} className="w-16! cursor-pointer">
@@ -81,7 +84,7 @@ export function ReviewsList({ medicineId }: { medicineId: string }) {
                                             }
                                         </FieldTitle>
                                     </FieldContent>
-                                    <RadioGroupItem hidden value={star === -1 ? "all" : star.toString()} id={star.toString()} />
+                                    <RadioGroupItem hidden value={star.toString()} id={star.toString()} />
                                 </Field>
                             </FieldLabel>
                         ))
@@ -100,24 +103,27 @@ export function ReviewsList({ medicineId }: { medicineId: string }) {
                 <WriteReview setReviewData={setReviewData} reviewData={reviewData} medicineId={medicineId} />
             </div>
             {
-                reviewData.reviews.length === 0 ?
-                    <div className="text-center py-12">
-                        <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">No reviews yet</h3>
-                        <p className="text-muted-foreground">
-                            Be the first to review this product
-                        </p>
-                    </div>
+                fetchingReview ?
+                    <PageLoader message="Loading review" />
                     :
-                    reviewData.reviews.map((review) => (
-                        <ReviewCard
-                            key={review.id}
-                            review={review}
-                            setReviewData={setReviewData}
-                            currentUserId={session?.id}
-                            reviewData={reviewData}
-                        />
-                    ))
+                    reviewData.reviews.length === 0 ?
+                        <div className="text-center py-12">
+                            <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                            <h3 className="text-lg font-semibold mb-2">No reviews yet</h3>
+                            <p className="text-muted-foreground">
+                                Be the first to review this product
+                            </p>
+                        </div>
+                        :
+                        reviewData.reviews.map((review) => (
+                            <ReviewCard
+                                key={review.id}
+                                review={review}
+                                setReviewData={setReviewData}
+                                currentUserId={session?.id}
+                                reviewData={reviewData}
+                            />
+                        ))
             }
         </div>
     )

@@ -20,13 +20,19 @@ import {
 } from "@/components/ui/sheet"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Dispatch, KeyboardEvent, useCallback, useEffect, useState } from "react"
+import { Dispatch, KeyboardEvent, useActionState, useCallback, useEffect, useState } from "react"
 import { getCategories, getMedicines } from "@/actions/shop.actions"
 import { Card, CardContent } from "../ui/card"
 import MedicineCardContainer from "./MedicineCardContainer"
 import { toast } from "sonner"
 import { PageLoader } from "../ui/Loader"
 import { Spinner } from "../ui/spinner"
+import { ShopMedicine } from "@/types/medicine"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { setShopData } from "@/redux/slice/medicineSlice"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Router } from "next/router"
+import { setCategories } from "@/redux/slice/categories"
 
 
 export interface SearchParams {
@@ -42,30 +48,36 @@ const sortOptions = [
   { value: "price-high", label: "Price: High to Low" },
   { value: "newest", label: "Newest First" },
 ]
+export function ShopPage() {
+  const medicines = useAppSelector((state) => state.shop)
+  const categories = useAppSelector((state) => state.category);
+  const dispatch = useAppDispatch();
+  const [isFirst, setIsFirst] = useState(true);
 
-type Categories = {
-  id: string;
-  name: string;
-}
 
-export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
-  const [medicines, setMedicines] = useState(InitialMedicine)
-  const [categories, setCategories] = useState<Categories[]>([{ id: "all", name: "All Categories" }]);
-
-  const [searchText, setSearchText] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all")
-  const [selectedSort, setSelectedSort] = useState<string>("relevance")
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [searching, setSearching] = useState(false);
   const [loadingPagination, setLoadingPagination] = useState(false)
 
-  const handleSearch = useCallback(async () => {
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+  const router = useRouter();
+
+  const [searchText, setSearchText] = useState<string>(params.get("search") || "");
+  const setSearchParams = (key: string, value: string) => {
+    params.set(key, value);
+    router.push(`?${params.toString()}`);
+    handleSearch();
+  }
+
+  const handleSearch = async () => {
+    console.log("Searched")
     setSearching(true);
     try {
       const { data, error } = await getMedicines({
-        searchText,
-        categoryId: selectedCategory,
-        sortBy: selectedSort,
+        searchText: params.get("search") || "",
+        category: params.get("category") || "All Categories",
+        sortBy: params.get("sort") || "relevance",
         page: 1
       });
       if (!data) {
@@ -76,7 +88,8 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
         toast.error(data.message);
       }
       else {
-        setMedicines(data.data);
+        console.log({ medicines: data.data })
+        dispatch(setShopData(data.data))
       }
     } catch (error: any) {
       toast.error(error.message)
@@ -85,17 +98,18 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
       setSearching(false);
     }
 
-  }, [searchText, selectedCategory, selectedSort]);
+  }
 
   const handlePagination = async () => {
     setLoadingPagination(true);
     try {
       const { data, error } = await getMedicines({
-        searchText,
-        categoryId: selectedCategory,
-        sortBy: selectedSort,
+        searchText: params.get("search") || "",
+        category: params.get("category") || "All Categories",
+        sortBy: params.get("sort") || "relevance",
         page: medicines.meta.page + 1
       });
+
       if (!data) {
         toast.error(error);
         return;
@@ -104,10 +118,11 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
         toast.error(data.message);
       }
       else {
-        setMedicines((prev: any) => ({
-          data: [...prev.data, ...data.data.data],
+        dispatch(setShopData({
+          data: [...medicines.data, ...data.data.data],
           meta: data.data.meta
         }));
+        console.log({ meta: medicines.meta })
       }
     } catch (error: any) {
       toast.error(error.message)
@@ -126,27 +141,31 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
 
   // Auto-search when filters change
   useEffect(() => {
-    handleSearch();
-  }, [selectedCategory, selectedSort]);
-
-  const clearSearch = () => {
-    setSearchText("")
-    setSelectedCategory("all")
-    setSelectedSort("relevance")
-  }
+    if (isFirst) {
+      setIsFirst(false);
+      if (medicines.data.length === 0) {
+        handleSearch();
+      }
+      if (categories.length === 1) {
+        getCategoryList();
+      }
+    }
+    else {
+      handleSearch();
+    }
+  }, []);
   const getCategoryList = async () => {
     const { data, error } = await getCategories();
     if (data) {
-      setCategories([...categories, ...data.data]);
+      dispatch(setCategories(data.data));
     }
     else {
-      console.log(error)
+      toast.error(error);
     }
   }
 
   useEffect(() => {
-    getCategoryList();
-    handleSearch();
+
   }, [])
   return (
     <>
@@ -158,7 +177,7 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
             <Input
               type="text"
               placeholder="Search for medicines, health products..."
-              value={searchText}
+              defaultValue={params.get("search") || ""}
               onChange={(e) => setSearchText(e.target.value)}
               onKeyDown={handleKeyDown}
               className="pr-10 h-11"
@@ -171,19 +190,19 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
                 <X className="h-4 w-4" />
               </button>
             )}
-            <Button onClick={handleSearch} className="h-11 w-20">Search</Button>
+            <Button onClick={() => setSearchParams("search", searchText)} className="h-11 w-20">Search</Button>
           </div>
 
           {/* Category Select - Desktop */}
           <div className="flex gap-2 lg:w-fit w-full">
             <div className="hidden sm:block min-w-36">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select value={params.get('category') || "All Categories"} onValueChange={(value) => setSearchParams('category', value)}>
                 <SelectTrigger className="w-full select-trigger">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
+                    <SelectItem key={category.id} value={category.name}>
                       {category.name}
                     </SelectItem>
                   ))}
@@ -193,7 +212,7 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
 
             {/* Sort Select - Desktop */}
             <div className="hidden sm:block min-w-36">
-              <Select value={selectedSort} onValueChange={setSelectedSort}>
+              <Select value={params.get('sort') || "relevance"} onValueChange={(value) => setSearchParams("sort", value)}>
                 <SelectTrigger className="sort-trigger">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
@@ -226,7 +245,7 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
                 {/* Mobile Category */}
                 <div className="space-y-2">
                   <Label htmlFor="mobile-category">Category</Label>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <Select value={params.get("category") || "All Categories"} onValueChange={(value) => setSearchParams('category', value)}>
                     <SelectTrigger id="mobile-category">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
@@ -243,7 +262,7 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
                 {/* Mobile Sort */}
                 <div className="space-y-2">
                   <Label htmlFor="mobile-sort">Sort By</Label>
-                  <Select value={selectedSort} onValueChange={setSelectedSort}>
+                  <Select value={params.get("sort") || "relevance"} onValueChange={(value) => setSearchParams('sort', value)}>
                     <SelectTrigger id="mobile-sort">
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
@@ -260,13 +279,6 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
                 {/* Actions */}
                 <div className="flex gap-2 pt-4">
                   <Button
-                    variant="outline"
-                    onClick={clearSearch}
-                    className="flex-1"
-                  >
-                    Clear All
-                  </Button>
-                  <Button
                     onClick={() => {
                       handleSearch()
                       setIsFilterOpen(false)
@@ -280,67 +292,12 @@ export function ShopPage({ medicines: InitialMedicine }: { medicines: any }) {
             </SheetContent>
           </Sheet>
         </div>
-
-        {/* Active Filters Display */}
-        {(selectedCategory !== "all" || selectedSort !== "relevance" || searchText) && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm text-muted-foreground">Active filters:</span>
-
-            {searchText && (
-              <Badge variant="secondary" className="gap-1">
-                Query: {searchText}
-                <button
-                  onClick={() => setSearchText("")}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-
-            {selectedCategory !== "all" && (
-              <Badge variant="secondary" className="gap-1">
-                {categories.find(c => c.id === selectedCategory)?.name}
-                <button
-                  onClick={() => setSelectedCategory("all")}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-
-            {selectedSort !== "relevance" && (
-              <Badge variant="secondary" className="gap-1">
-                {sortOptions.find(s => s.value === selectedSort)?.label}
-                <button
-                  onClick={() => setSelectedSort("relevance")}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearSearch}
-              className="h-6 text-xs"
-            >
-              Clear all
-            </Button>
-          </div>
-        )}
       </Card>
       {
         searching ?
           <PageLoader message="Searching medicine" />
           :
           <MedicineCardContainer medicines={medicines.data} />
-      }
-      {
-        medicines.data.length == 0 && <h1 className="text-muted-foreground w-full text-center h-72 mt-20">No medicine found</h1>
       }
       {
         medicines.data.length != 0 && (

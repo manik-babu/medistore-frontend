@@ -8,7 +8,7 @@ type InitialState = {
 
 const initialState: any = null;
 
-const userSlic = createSlice({
+const userSlice = createSlice({
     name: "userInfo",
     initialState,
     reducers: {
@@ -18,6 +18,6 @@ const userSlic = createSlice({
     }
 });
 
-export const { setUser } = userSlic.actions;
+export const { setUser } = userSlice.actions;
 
-export default userSlic.reducer;
+export default userSlice.reducer;

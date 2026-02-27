@@ -29,10 +29,10 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
     const [formError, setformError] = useState<null | string>(null);
     const form = useForm({
         defaultValues: {
-            name: medicine.name,
-            description: medicine.description,
-            categoryId: medicine.category.id,
-            price: medicine.price
+            name: medicine.medicine.name,
+            description: medicine.medicine.description,
+            categoryId: medicine.medicine.category.id,
+            price: medicine.medicine.price
         },
         validators: {
             onSubmit: formSchema
@@ -54,7 +54,7 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
                     description: value.description,
                     categoryId: value.categoryId,
                     price: price
-                }, medicine.id);
+                }, medicine.medicine.id);
                 setloading(false);
                 if (data) {
                     if (data.ok) {
@@ -106,7 +106,7 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
                     <Field >
                         <div className='flex gap-1 w-full overflow-x-auto auto my-4'>
                             <div className='relative w-49'>
-                                <img className='w-full rounded-md border' src={medicine.imageUrl} alt={'image'} />
+                                <img className='w-full rounded-md border' src={medicine.medicine.imageUrl} alt={'image'} />
                             </div>
                         </div>
                         <CardDescription className="text-red-500">You can't update medicine image</CardDescription>

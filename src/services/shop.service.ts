@@ -7,31 +7,23 @@ const getCategories = async () => {
 
         const data = await fetch(`${BACKEND_URL}/api/categories`).then(res => res.json());
 
-        if (data.ok) {
-            return {
-                data,
-                error: null
-            }
-        }
-        else {
-            return {
-                data: null,
-                error: data.error
-            }
+        return {
+            data,
+            error: null
         }
 
-    } catch (error) {
+    } catch (error: any) {
         return {
             data: null,
-            error: "Something went wrong"
+            error: error.message
         }
     }
 }
-const getMedicines = async ({ searchText, categoryId, sortBy, page }: { searchText: string; categoryId: string; sortBy: string, page: number }) => {
+const getMedicines = async ({ searchText, category, sortBy, page }: { searchText: string; category: string; sortBy: string, page: number }) => {
     try {
         const url = new URL(`${BACKEND_URL}/api/medicines`);
         url.searchParams.append("searchText", searchText);
-        url.searchParams.append("categoryId", categoryId);
+        url.searchParams.append("category", category);
         url.searchParams.append("sortBy", sortBy);
         url.searchParams.append("page", page.toString());
 

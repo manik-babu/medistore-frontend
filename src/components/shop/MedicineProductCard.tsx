@@ -135,13 +135,13 @@ export function MedicineProductCard({
               Details
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[95dvh] scroll">
+          <SheetContent side="bottom" className="h-[95dvh]">
             <SheetTitle className="pl-14 p-2">
               <SheetClose asChild>
                 <Button variant="outline" className="rounded-full cursor-pointer"> <ArrowLeft /> Back to product page</Button>
               </SheetClose>
             </SheetTitle>
-            <div className="overflow-scroll">
+            <div className="overflow-auto">
               <MedicineDetailsPage medicineId={product.id} handleAddToCart={handleAddToCart} isAddingToCart={isAddingToCart} />
             </div>
           </SheetContent>
