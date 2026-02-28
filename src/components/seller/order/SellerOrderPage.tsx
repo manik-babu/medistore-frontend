@@ -66,7 +66,7 @@ export function SellerOrdersPage({ initialOrders }: { initialOrders: OrderData }
                 page
             });
             if (!res.data) {
-                toast.error("Unable to load orders!")
+                toast.error(res.error || "Unable to load orders!")
                 return;
             }
             if (!res.data.ok) {
@@ -78,8 +78,8 @@ export function SellerOrdersPage({ initialOrders }: { initialOrders: OrderData }
             else {
                 setorders(res.data.data);
             }
-        } catch (error) {
-            toast.error("Unable to load orders!");
+        } catch (error: any) {
+            toast.error(error.message || "Unable to load orders!");
         }
     }
 

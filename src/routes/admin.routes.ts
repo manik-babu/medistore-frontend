@@ -20,16 +20,21 @@ export const adminRoutes: Route[] = [
         ],
     },
     {
-        title: "Inventory",
+        title: "User",
+        items: [
+            {
+                title: "All Users",
+                url: "/admin/users",
+            }
+        ],
+    },
+    {
+        title: "Medicine",
         items: [
             {
                 title: "All Medicines",
-                url: "/seller/medicines",
-            },
-            {
-                title: "Add Medicines",
-                url: "/seller/medicines/add",
-            },
+                url: "/admin/medicines",
+            }
         ],
     },
 ]

@@ -48,7 +48,6 @@ export function EmailVerificationPage() {
                 setMessage("Verification failed. Please try again.")
             }
         } catch (error) {
-            console.error("Verification error:", error)
             setStatus("error")
             setMessage("Something went wrong. Please try again later.")
         }

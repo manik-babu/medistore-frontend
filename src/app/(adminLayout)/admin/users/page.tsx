@@ -1,7 +1,7 @@
+import UserMainPage from "@/components/admin/users/MainPage";
+
 export default function Users() {
     return (
-        <div>
-            <h1>This is users page</h1>
-        </div>
+        <UserMainPage />
     );
 }

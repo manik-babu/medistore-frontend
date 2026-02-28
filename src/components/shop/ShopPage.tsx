@@ -19,7 +19,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
 import { Dispatch, KeyboardEvent, useActionState, useCallback, useEffect, useState } from "react"
 import { getCategories, getMedicines } from "@/actions/shop.actions"
 import { Card, CardContent } from "../ui/card"
@@ -162,22 +161,23 @@ export function ShopPage() {
   }
   return (
     <>
-      <Card className={`w-full space-y-4 mt-4 sm:px-4 px-2 py-4 gap-1`}>
+      <Card className={`w-full space-y-4 sm:px-4 px-2 py-4 gap-1`}>
         {/* Main Search Bar */}
+        <h1 className="text-2xl font-bold">Search Medicine</h1>
         <div className="flex items-center lg:flex-row flex-col gap-2 w-full">
           {/* Search Input */}
           <div className="relative flex-1 w-full flex gap-1">
             <Input
               type="text"
               placeholder="Search for medicines, health products..."
-              defaultValue={params.get("search") || ""}
+              value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onKeyDown={handleKeyDown}
               className="pr-10 h-11"
             />
             {searchText && (
               <button
-                onClick={() => setSearchText("")}
+                onClick={() => { setSearchParams("search", ""); setSearchText("") }}
                 className="absolute right-24 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 <X className="h-4 w-4" />

@@ -66,24 +66,28 @@ export default function EditMedicine({ medicine }: { medicine: MedicineData }) {
                     }
                 }
                 else {
-                    setformError("Something went wrong! Please try again");
+                    setformError(error || "Something went wrong! Please try again");
                 }
 
 
-            } catch (error) {
+            } catch (error: any) {
                 setloading(false);
-                setformError("Something went wrong! Please try again");
+                setformError(error.message || "Something went wrong! Please try again");
             }
         }
     });
 
     const getCategoryList = async () => {
         const { data, error } = await getCategories();
-        if (data && data.ok) {
+        if (error) {
+            toast.error(error);
+            return;
+        }
+        if (data.ok) {
             setCategories(data.data);
         }
         else {
-            setformError("Unable to download categories")
+            toast.error(data.message)
         }
     }
 

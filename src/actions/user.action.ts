@@ -40,3 +40,6 @@ export const changeRole = async (storeName: string) => {
 export const updateProfile = async (data: ProfileData) => {
     return await userService.updateProfile(data);
 }
+export const updateProfileImage = async (image: File) => {
+    return await userService.updateProfileImage(image);
+}

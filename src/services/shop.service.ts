@@ -62,9 +62,28 @@ const getMedicineById = async (medicineId: string) => {
         }
     }
 }
+const getFeaturedMedicines = async () => {
+    try {
+        const url = new URL(`${BACKEND_URL}/api/featured`);
 
+        const data = await fetch(url.toString(), {
+            cache: "no-store"
+        }).then(res => res.json());
+
+        return {
+            data,
+            error: null
+        }
+    } catch (error: any) {
+        return {
+            data: null,
+            error: error.message
+        }
+    }
+}
 export const shopService = {
     getCategories,
     getMedicines,
     getMedicineById,
+    getFeaturedMedicines,
 }

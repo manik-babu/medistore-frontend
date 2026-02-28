@@ -33,6 +33,14 @@ export default function MobileNav({ className }: { className?: string }) {
                             shop
                         </Button>
                     </Link>
+                    <Link href="/about">
+                        <Button variant={"ghost"} className={`cursor-pointer w-full hover:text-accent-foreground rounded-none ${path === "/about"
+                            ? "bg-accent dark:bg-accent/50"
+                            : "text-muted-foreground"
+                            }`}>
+                            shop
+                        </Button>
+                    </Link>
                 </div>
             </SheetContent>
         </Sheet>

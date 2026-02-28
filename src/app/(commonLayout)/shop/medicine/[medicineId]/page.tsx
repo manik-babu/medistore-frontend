@@ -1,4 +1,4 @@
-import { ErrorPage } from "@/components/shop/ErrorPage";
+import { ErrorPage } from "@/components/ErrorPage";
 import { MedicineDetailsPage } from "@/components/shop/MedicineDetailsPage";
 import { shopService } from "@/services/shop.service";
 

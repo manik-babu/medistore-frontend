@@ -7,7 +7,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Ellipsis } from "lucide-react"
+import { EllipsisVertical } from "lucide-react"
 import { useState } from 'react'
 import {
     AlertDialog,
@@ -55,7 +55,7 @@ export function DropdownMenuBasic({ medicine }: { medicine: { medicineId: string
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <Ellipsis className="cursor-pointer" />
+                    <EllipsisVertical className="cursor-pointer" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem onClick={() => router.push(`/seller/medicines/edit/${medicine.medicineId}`)}><Edit /> Edit</DropdownMenuItem>

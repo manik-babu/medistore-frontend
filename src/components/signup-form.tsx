@@ -62,7 +62,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     onSubmit: async ({ value }) => {
       try {
         if (value.role === UserRole.ADMIN) {
-          toast.error("Signup faild! Please select valid role");
+          toast.error("Signup failed! Please select valid role");
           return;
         }
         if (value.role === UserRole.CUSTOMER) {
@@ -79,9 +79,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           setsignUpSuccess(true);
 
         }
-      } catch (error) {
+      } catch (error: any) {
         setloading(true);
-        toast.error("Something went wrong")
+        toast.error(error.message || "Something went wrong")
       }
     }
 

@@ -1,3 +1,4 @@
+import { ErrorPage } from "@/components/ErrorPage";
 import { SellerDashboard } from "@/components/seller/SellerDashboard";
 import { sellerService } from "@/services/seller.service";
 import { Package } from "lucide-react";
@@ -6,10 +7,10 @@ export const dynamic = "force-dynamic";
 export default async function Dashboard() {
     const res = await sellerService.getDashboardData();
     if (!res.data) {
-        throw new Error("Data retrived faild");
+        throw new Error(res.error);
     }
     if (!res.data.ok) {
-        throw new Error(res.data.message);
+        return <ErrorPage message={res.data.message} statusCode={res.data.status} />
     }
 
     if (res.data.data.length === 0) {

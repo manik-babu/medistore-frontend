@@ -15,6 +15,8 @@ import { UserRole } from "@/constants/userRole";
 import { updateProfile } from "@/actions/user.action";
 import { Toaster } from "../ui/sonner";
 import Link from "next/link";
+import { UploadImage } from "../ui/ImageUploader";
+import { EditProfileImage } from "../ui/EditProfileImage";
 type UserProfile = {
     id: string
     name: string
@@ -115,6 +117,7 @@ export default function EditProfile({ user }: { user: UserProfile }) {
                     {formError}
                 </CardDescription>} */}
                 </CardHeader>
+                <EditProfileImage image={user.image} name={user.name} />
                 <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}>
                     <FieldGroup>
                         <form.Field

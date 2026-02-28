@@ -3,12 +3,18 @@ import cartReducer from "./slice/cartSlice"
 import userReducer from './slice/userSlice'
 import shopReducer from './slice/medicineSlice'
 import { categoryReducer } from "./slice/categories";
+import { userAdminReducer } from "./slice/userAdminSlice";
+import { adminMedicineReducer } from "./slice/adminMedicine";
+
+
 export const store = configureStore({
     reducer: {
         cart: cartReducer,
         user: userReducer,
         shop: shopReducer,
         category: categoryReducer,
+        adminUser: userAdminReducer,
+        adminMedicine: adminMedicineReducer,
     }
 });
 

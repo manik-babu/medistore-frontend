@@ -13,6 +13,13 @@
     gap: 8px;
 }
 
+#featured {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(272px, 272px));
+    gap: 8px;
+    place-content: center;
+}
+
 .taka-symbol {
     display: block;
     transform: scale(1.5);

@@ -1,3 +1,4 @@
+import { ErrorPage } from "@/components/ErrorPage";
 import OrderCard from "@/components/orders/OrderCard";
 import { OrderCarts } from "@/components/orders/OrderCarts";
 import { CardTitle } from "@/components/ui/card";
@@ -10,7 +11,7 @@ export default async function OrderDetails({ params }: { params: Promise<{ order
         throw new Error(res.error);
     }
     if (!res.data.ok) {
-        throw new Error(res.data.message);
+        return <ErrorPage message={res.data.message} statusCode={res.data.status} />
     }
     const { carts, ...order } = res.data.data;
     return (

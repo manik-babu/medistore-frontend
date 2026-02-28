@@ -49,9 +49,12 @@ export function CartPage({ initialItems = [] }: CartPageProps) {
   const fetchCartItems = async () => {
     try {
       const response = await getCarts();
-      console.log(response)
+      if (response.error) {
+        toast.error(response.error);
+        return;
+      }
+
       if (response.data.ok) {
-        console.log({ cartPage: response.data })
         setCartItems(response.data.data);
       }
       else {

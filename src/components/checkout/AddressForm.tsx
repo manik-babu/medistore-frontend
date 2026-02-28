@@ -53,19 +53,20 @@ export default function AddressForm({ orders }: { orders: FormatedDataForOrder }
                 const res = await placeOrder(data);
 
                 if (res.error) {
-                    throw new Error();
+                    toast.error(res.error)
+                    return;
                 }
+
                 if (res.data.ok) {
                     setorderSuccess(true);
                     dispatch(setCartValue(0));
-                    console.log(res.data)
                 }
                 else {
                     toast.error(res.data.message)
                 }
 
-            } catch (error) {
-                toast.error("Something went wrong! Try again");
+            } catch (error: any) {
+                toast.error(error.message || "Something went wrong! Try again");
             }
             finally {
                 setloading(false);

@@ -1,3 +1,4 @@
+import { ErrorPage } from "@/components/ErrorPage";
 import { SellerOrdersPage } from "@/components/seller/order/SellerOrderPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { sellerService } from "@/services/seller.service";
@@ -14,7 +15,7 @@ export default async function Orders() {
         throw new Error(res.data.error);
     }
     if (!res.data.ok) {
-        throw new Error(res.data.message);
+        return <ErrorPage message={res.data.message} statusCode={res.data.status} />
     }
     if (res.data.data.orders.length === 0) {
         return (

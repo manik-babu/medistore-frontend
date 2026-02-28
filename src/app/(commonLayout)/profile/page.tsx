@@ -12,7 +12,7 @@ export default async function Profile() {
     }
     const { data: userDetails, error } = await userService.getUserDetails();
     if (error) {
-        throw new Error("Something went wrong to load profile!");
+        throw new Error(error || "Something went wrong to load profile!");
     }
     if (!userDetails) {
         redirect("/login");

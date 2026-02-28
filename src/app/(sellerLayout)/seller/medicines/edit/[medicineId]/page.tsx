@@ -1,3 +1,4 @@
+import { ErrorPage } from "@/components/ErrorPage";
 import EditMedicine from "@/components/seller/medicines/EditMedicine";
 import { shopService } from "@/services/shop.service";
 export const dynamic = "force-dynamic"
@@ -10,9 +11,8 @@ export default async function MedicineEdit({ params }: { params: Promise<{ medic
     }
 
     if (!data.ok) {
-        throw new Error(data.message);
+        return <ErrorPage message={data.message} statusCode={data.status} />
     }
-    console.log(data.data.medicine)
     return (
         <div>
             <EditMedicine medicine={data.data.medicine} />

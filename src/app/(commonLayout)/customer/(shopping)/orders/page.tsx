@@ -1,3 +1,4 @@
+import { ErrorPage } from "@/components/ErrorPage";
 import { MyOrdersPage } from "@/components/orders/MyOrdersPage"
 import { userService } from "@/services/user.service"
 
@@ -9,9 +10,8 @@ export default async function Orders() {
         throw new Error(res.data.error);
     }
     if (!res.data.ok) {
-        throw new Error(res.data.message);
+        return <ErrorPage message={res.data.message} statusCode={res.data.status} />
     }
-
 
     return <MyOrdersPage orders={res.data.data} />
 }

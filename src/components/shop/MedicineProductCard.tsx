@@ -76,6 +76,9 @@ export function MedicineProductCard({
         return;
       }
       const res = await addToCart(medicineId, quantity);
+      if (res.error) {
+        toast.error(res.error);
+      }
       if (res.data.ok) {
         toast.success("Added to the cart")
         dispatch(increment());
@@ -83,9 +86,8 @@ export function MedicineProductCard({
       else {
         toast.error(res.data.message);
       }
-    } catch (error) {
-      console.error("Error adding to cart:", error)
-      toast.error("Something went wrong")
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong")
     } finally {
       setIsAddingToCart(false)
     }

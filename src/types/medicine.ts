@@ -19,11 +19,7 @@ export type MedicineData = {
         _count: {
             carts: number
         }
-        author: {
-            id: string
-            storeName: string
-            image: string | null
-        }
+        author: Author;
     }
     ratings: {
         total: {
@@ -69,7 +65,9 @@ export interface Count {
 export interface Author {
     id: string;
     storeName: string;
-    image: null;
+    image: string | null;
+    email: string;
+    isBanned: boolean;
 }
 
 export interface Category {

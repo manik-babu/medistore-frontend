@@ -1,7 +1,7 @@
+import { ErrorPage } from "@/components/ErrorPage";
+
 export default function Permission() {
     return (
-        <div>
-            <h1>This is permission page</h1>
-        </div>
+        <ErrorPage message={"You do not have permission to access this page."} statusCode={403} />
     );
 }

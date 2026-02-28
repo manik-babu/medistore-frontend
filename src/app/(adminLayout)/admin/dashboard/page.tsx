@@ -1,7 +1,8 @@
 import AdminDashboard from "@/components/admin/Dashboard";
-import { ErrorPage } from "@/components/shop/ErrorPage";
+import { ErrorPage } from "@/components/ErrorPage";
 import { adminService } from "@/services/admin.service";
 
+export const dynamic = 'force-dynamic'
 export default async function Dashboard() {
     const res = await adminService.getStatics();
     if (!res.data) {

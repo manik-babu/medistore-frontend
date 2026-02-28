@@ -23,3 +23,32 @@ export interface Order {
     delivered: number;
     cancelled: number;
 }
+
+// user
+export interface AdminUserData {
+    data: User[],
+    meta: Meta
+
+}
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: null;
+    createdAt: Date;
+    updatedAt: Date;
+    role: string;
+    contact: null;
+    bio: null;
+    age: null;
+    isBanned: boolean;
+    storeName: null;
+}
+export interface Meta {
+    total: number;
+    page: number;
+    limit: number;
+    totalPage: number;
+}
+

@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import SearchBar from "./SearchBar"
+import FeaturedMedicine from "./FeaturedMedicine"
 
 export function MediStoreLanding() {
     const features = [
@@ -59,6 +60,7 @@ export function MediStoreLanding() {
                     </div>
                 </div>
             </section>
+            <FeaturedMedicine />
 
             {/* Features Section */}
             <section className="py-20 bg-muted/50">

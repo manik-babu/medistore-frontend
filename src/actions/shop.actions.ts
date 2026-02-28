@@ -13,3 +13,7 @@ export const getMedicines = async (data: { searchText: string; category: string;
 export const getMedicineById = async (medicineId: string) => {
     return await shopService.getMedicineById(medicineId);
 }
+
+export const getFeaturedMedicines = async () => {
+    return await shopService.getFeaturedMedicines();
+}

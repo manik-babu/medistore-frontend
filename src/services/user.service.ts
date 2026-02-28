@@ -35,14 +35,10 @@ const getUserDetails = async () => {
             },
             cache: 'no-store'
         }).then(res => res.json());
-        if (!result.ok) {
-            return { data: null, error: "Something went wrong!" }
-        }
-        else {
-            return { data: result.data, error: null };
-        }
-    } catch (error) {
-        return { data: null, error: "Internal server error" }
+
+        return { data: result.data, error: null };
+    } catch (error: any) {
+        return { data: null, error: error.message }
     }
 }
 const addToCart = async (medicineId: string, quantity: number) => {
@@ -283,6 +279,32 @@ const updateProfile = async (data: ProfileData) => {
     }
 }
 
+const updateProfileImage = async (image: File) => {
+    try {
+        const formData = new FormData();
+
+        formData.append("image", image);
+        const cookieStore = await cookies();
+
+        const res = await fetch(`${BACKEND_URL}/api/user/update/profile`, {
+            method: "POST",
+            headers: {
+                Cookie: cookieStore.toString()
+            },
+            body: formData
+        }).then(res => res.json());
+        return {
+            data: res,
+            error: null,
+        };
+    } catch (error: any) {
+        return {
+            data: null,
+            error: error.message
+        }
+    }
+}
+
 
 export const userService = {
     getSession,
@@ -298,4 +320,5 @@ export const userService = {
     verifyEmail,
     changeRole,
     updateProfile,
+    updateProfileImage,
 }

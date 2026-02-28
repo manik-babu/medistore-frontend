@@ -1,23 +1,19 @@
 "use client"
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { Minus, Plus, ShoppingCart, Star, Package, Store, Calendar, Heart, ArrowLeft } from "lucide-react"
+import { useState } from "react"
+import { Minus, Plus, ShoppingCart, Star, Package, Store, Calendar, Heart, ArrowLeft, Ban } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
-import { getMedicineById } from "@/actions/shop.actions"
-import { Toaster } from "../ui/sonner"
 import { Spinner } from "../ui/spinner"
-import { PageLoader } from "../ui/Loader"
 import { RatingsOverview } from "../reviews/RatingsOverview"
 import { MedicineData } from "@/types/medicine"
 import { ReviewsList } from "../reviews/ReviewList"
@@ -26,6 +22,9 @@ import { UserRole } from "@/constants/userRole"
 import { increment } from "@/redux/slice/cartSlice"
 import { useAppDispatch } from "@/redux/hooks"
 import { useRouter } from "next/navigation"
+import BanUser from "../ui/BanUser"
+import BanMedicine from "../ui/BanMedicine"
+import FeaturedMedicine from "../ui/FeaturedMedicine"
 
 
 
@@ -35,9 +34,10 @@ interface MedicineDetailsPageProps {
 }
 
 export function MedicineDetailsPage({
-  data,
+  data: initialData,
   className = "",
 }: MedicineDetailsPageProps) {
+  const [data, setData] = useState(initialData)
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -84,7 +84,6 @@ export function MedicineDetailsPage({
         toast.error(res.data.message);
       }
     } catch (error) {
-      console.error("Error adding to cart:", error)
       toast.error("Something went wrong")
     } finally {
       setIsAddingToCart(false)
@@ -127,6 +126,7 @@ export function MedicineDetailsPage({
           {/* Additional Info Card */}
           <Card>
             <CardHeader>
+              <BanUser isBanned={data.medicine.author.isBanned} userId={data.medicine.authorId} />
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Store className="h-5 w-5" />
                 Store Information
@@ -148,6 +148,11 @@ export function MedicineDetailsPage({
 
         {/* Right Column - Details */}
         <Card className=" p-6">
+          <div className="flex gap-2">
+            <BanMedicine setData={setData} medicineId={data.medicine.id} isBanned={data.medicine.isBanned} />
+            <FeaturedMedicine setData={setData} medicineId={data.medicine.id} isFeatured={data.medicine.isFeatured} />
+
+          </div>
           {/* Product Title & Category */}
           <div>
             <Badge variant="outline" className="mb-2">
@@ -217,6 +222,7 @@ export function MedicineDetailsPage({
                     </Button>
                     :
                     <Button
+                      disabled={data.medicine.isBanned}
                       className="flex-1 cursor-pointer"
                       size="lg"
                       onClick={handleAddToCart}

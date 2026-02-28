@@ -1,5 +1,4 @@
 import { CartPage } from "@/components/cart/CartPage";
-import { SimpleNavbar } from "@/components/cart/SimpleNavbar";
 
 export const dynamic = "force-dynamic"
 export default function Carts() {

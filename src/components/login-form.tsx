@@ -57,14 +57,13 @@ export function LoginForm({
         setloading(true);
         const res = await authClient.signIn.email(value);
         if (res.error) {
-          console.log(res)
           setformError(res.error?.message || "Something went wrong");
           return;
         }
         setloading(false)
         router.push("/profile");
-      } catch (error) {
-        toast.error("Login faild! Try again");
+      } catch (error: any) {
+        toast.error(error.message || "Login failed! Try again");
       }
       finally {
         setloading(false);

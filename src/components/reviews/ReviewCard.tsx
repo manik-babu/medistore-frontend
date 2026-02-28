@@ -12,6 +12,9 @@ import { Dispatch, SetStateAction, useState } from "react"
 import { Spinner } from "../ui/spinner"
 import { Textarea } from "../ui/textarea"
 import { reviewResponse } from "@/actions/seller.actions"
+import { useAppSelector } from "@/redux/hooks"
+import { UserRole } from "@/constants/userRole"
+import BanUser from "../ui/BanUser"
 
 
 interface ReviewCardProps {

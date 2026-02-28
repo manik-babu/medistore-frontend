@@ -23,19 +23,14 @@ const getMedicines = async ({ searchText, categoryId, sortBy, page }: { searchTe
             }
         }).then(res => res.json());
 
-        if (data.ok) {
-            return {
-                data,
-                error: null
-            }
+        return {
+            data,
+            error: null
         }
-        else {
-            throw new Error(data.error);
-        }
-    } catch (error) {
+    } catch (error: any) {
         return {
             data: null,
-            error: error
+            error: error.message
         }
     }
 }
@@ -70,10 +65,10 @@ const addMedicine = async (data: AddMedicineProps) => {
             data: res,
             error: null,
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             data: null,
-            error: error
+            error: error.message
         }
     }
 }
@@ -121,10 +116,10 @@ const updateMedicine = async (data: UpdateMedicineProps, medicineId: string) => 
             data: res,
             error: null,
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             data: null,
-            error: error
+            error: error.message
         }
     }
 }

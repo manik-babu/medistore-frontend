@@ -83,7 +83,7 @@ export function ProfilePage({ user, className = "", data }: ProfilePageProps) {
       await signOut();
       dispatch(setUser(null));
     } catch (error) {
-      toast.error("Logout faild!");
+      toast.error("Logout failed!");
     }
     finally {
       setlogginOut(false);

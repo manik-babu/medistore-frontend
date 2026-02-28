@@ -2,10 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid } from "recharts"
 import { Users, Store, Pill, ShoppingCart } from "lucide-react"
 import { useTheme } from "next-themes"
 import { AdminStatics } from "@/types/admin"
+import { ChartBarLabel } from "./BarChart"
+import { ChartPieLabelList } from "./PieChart"
 
 const data = {
     customer: { total: 5, banned: 0 },
@@ -71,91 +72,11 @@ export default function AdminDashboard({ data }: DashboardProps) {
             {/* Charts Section */}
             <div className="grid gap-6 lg:grid-cols-2">
                 {/* Orders Bar Chart */}
-                <Card className="rounded-2xl shadow-sm">
-                    <CardHeader>
-                        <CardTitle className="text-lg">Order Overview</CardTitle>
-                    </CardHeader>
-                    <CardContent className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={orderChartData} barCategoryGap={30}>
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    stroke="hsl(var(--border))"
-                                    vertical={false}
-                                />
+                <ChartBarLabel data={data.order} />
 
-                                <XAxis
-                                    dataKey="name"
-                                    stroke="hsl(var(--muted-foreground))"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tick={{ fill: theme == "dark" ? "#fff" : "hsl(var(--primary))" }}
-                                />
-                                <YAxis
-                                    allowDecimals={false}
-                                    stroke="hsl(var(--muted-foreground))"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tick={{ fill: theme == "dark" ? "#fff" : "hsl(var(--primary))" }}
-                                />
-
-                                <Tooltip
-                                    cursor={{ fill: "rgba(255,255,255,0.05)" }}
-                                    content={({ active, payload, label }) => {
-                                        if (active && payload && payload.length) {
-                                            return (
-                                                <div className="rounded-xl border bg-card px-4 py-2 shadow-lg">
-                                                    <p className="text-sm font-medium text-muted-foreground">
-                                                        {label}
-                                                    </p>
-                                                    <p className="text-lg font-bold text-foreground">
-                                                        {payload[0].value} Orders
-                                                    </p>
-                                                </div>
-                                            )
-                                        }
-                                        return null
-                                    }}
-                                />
-
-                                <Bar
-                                    dataKey="value"
-                                    // fill="hsl(var(--primary))"
-                                    fill={theme == "dark" ? "#fff" : "hsl(var(--primary))"}
-                                    radius={[12, 12, 0, 0]}
-                                    animationDuration={800}
-                                />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
 
                 {/* Users Pie Chart */}
-                <Card className="rounded-2xl shadow-sm">
-                    <CardHeader>
-                        <CardTitle className="text-lg">User Distribution</CardTitle>
-                    </CardHeader>
-                    <CardContent className="h-80 flex items-center justify-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={userChartData}
-                                    dataKey="total"
-                                    nameKey="name"
-                                    outerRadius={100}
-                                    label
-                                >
-                                    {userChartData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
+                <ChartPieLabelList customer={data.customer} seller={data.seller} />
             </div>
         </div>
     )

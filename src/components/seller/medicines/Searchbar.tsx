@@ -23,6 +23,8 @@ import { Badge } from "@/components/ui/badge"
 import { KeyboardEvent, useCallback, useEffect, useState } from "react"
 import { getCategories } from "@/actions/shop.actions"
 import { PaginationIconsOnly } from "./Pagination"
+import { toast } from "sonner"
+import { Toaster } from "@/components/ui/sonner"
 
 interface MedicineSearchBarProps {
     onSearch?: (params: SearchParams) => void
@@ -93,10 +95,15 @@ export function Searchbar({ onSearch, metaData, className }: MedicineSearchBarPr
     const getCategoryList = async () => {
         const { data, error } = await getCategories();
         if (data) {
-            setCategories([...categories, ...data.data]);
+            if (!data.ok) {
+                toast.error(data.message)
+            }
+            else {
+                setCategories([...categories, ...data.data]);
+            }
         }
         else {
-            console.log(error)
+            toast.error(error);
         }
     }
 
@@ -220,6 +227,7 @@ export function Searchbar({ onSearch, metaData, className }: MedicineSearchBarPr
                 metaData &&
                 <PaginationIconsOnly pageState={[page, setPage]} metaData={metaData} />
             }
+            <Toaster position="top-center" />
         </div>
     )
 }

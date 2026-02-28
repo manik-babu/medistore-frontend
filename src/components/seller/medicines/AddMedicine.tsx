@@ -71,12 +71,12 @@ export default function AddMedicine() {
                     }
                 }
                 else {
-                    setformError("Something went wrong! Please try again");
+                    setformError(error || "Something went wrong! Please try again");
                 }
 
-            } catch (error) {
+            } catch (error: any) {
                 setloading(false);
-                setformError("Something went wrong! Please try again");
+                setformError(error.message || "Something went wrong! Please try again");
             }
         }
     });
@@ -94,7 +94,7 @@ export default function AddMedicine() {
             setCategories(data.data);
         }
         else {
-            console.log(error)
+            toast.error(error);
         }
     }
 
