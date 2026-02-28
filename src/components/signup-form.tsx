@@ -245,9 +245,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     :
                     <Button type="submit" className="cursor-pointer">Create Account</Button>
                 }
-                <Button onClick={signInWithGoogle} variant="outline" type="button" className="cursor-pointer">
-                  Sign up with Google
-                </Button>
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <Link href="/login">Sign in</Link>
                 </FieldDescription>

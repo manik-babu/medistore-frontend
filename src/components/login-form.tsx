@@ -142,9 +142,6 @@ export function LoginForm({
                     :
                     <Button type="submit" className="cursor-pointer">Login</Button>
                 }
-                <Button onClick={signInWithGoogle} variant="outline" type="button" className="cursor-pointer">
-                  Login with Google
-                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <Link href="/signup">Sign up</Link>
                 </FieldDescription>
